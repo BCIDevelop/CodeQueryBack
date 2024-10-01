@@ -11,6 +11,8 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
             targetKey:'id'
         })
         this.hasMany(models.classrooms,{foreignKey:'owner_id'})
+        this.hasMany(models.questions,{foreignKey:'user_id'})
+        this.hasMany(models.answers,{foreignKey:'user_id'})
     }
     static initModel(sequelize:Sequelize){
         return super.init(
@@ -39,7 +41,7 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
                 },
                 active_status:{
                     type:DataTypes.BOOLEAN,
-                    defaultValue:true // false
+                    defaultValue:false // false
                 }
             },
             {

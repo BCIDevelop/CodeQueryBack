@@ -23,6 +23,8 @@ class UserModel extends sequelize_1.Model {
             targetKey: 'id'
         });
         this.hasMany(models.classrooms, { foreignKey: 'owner_id' });
+        this.hasMany(models.questions, { foreignKey: 'user_id' });
+        this.hasMany(models.answers, { foreignKey: 'user_id' });
     }
     static initModel(sequelize) {
         return super.init({
@@ -48,7 +50,7 @@ class UserModel extends sequelize_1.Model {
             },
             active_status: {
                 type: sequelize_1.DataTypes.BOOLEAN,
-                defaultValue: true // false
+                defaultValue: false // false
             }
         }, {
             sequelize,

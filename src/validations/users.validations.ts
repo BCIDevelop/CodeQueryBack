@@ -37,7 +37,7 @@ class UserValidations{
                 per_page:Joi.number().integer().default(10),
             }
     })
-}
+    }
     createRecord(){
         const joiCustom=Joi.extend(fileExtensions)
         return this.celebrate({
@@ -63,7 +63,7 @@ class UserValidations{
                 password:Joi.string().optional(),
                 email:Joi.string().optional(),
                 rol_id:Joi.number().integer().optional(),
-                avatar:joiCustom.file().contents().optional()
+                avatar:joiCustom.file().optional()
             }),
         })
     }

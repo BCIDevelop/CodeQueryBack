@@ -19,7 +19,6 @@ class RoleController{
                     ['id','ASC']
                 ],
             })
-            console.log(records)
             return res.status(200).json(paginatioResults(records,Number(page),Number(per_page)))
         }
         catch(error:any){

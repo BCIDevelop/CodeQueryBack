@@ -2,31 +2,27 @@ import {Model,DataTypes, Sequelize} from 'sequelize'
 import { Models } from '../types/sequelize.type';
 
 
-class RoleModel extends Model {
-    public id!: number;
-    public name!: string;
+class TagModel extends Model {
+   
     static associate(models:Models){
+        this.belongsToMany(models.questions, { through: 'question_tags' });
         
-        this.hasMany(models.users,{
-            foreignKey:'rol_id'
-        })
     }
     static initModel(sequelize:Sequelize){
         return super.init(
             {
                 name:{
                     type:DataTypes.STRING,
-
                 }
             },
             {
                 sequelize,
-                tableName:'roles',
-                modelName:'roles'
+                tableName:'tags',
+                modelName:'tags'
             }
         );
     }
 
 }
 
-export default RoleModel
+export default TagModel

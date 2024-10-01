@@ -10,12 +10,13 @@ class ClassRoomModel extends Model {
             foreignKey:'owner_id',
             targetKey:'id'
         })
+        this.hasMany(models.questions,{foreignKey:'classroom_id'})
     }
     static initModel(sequelize:Sequelize){
         return super.init(
             {
                 classroom_name:{
-                    type:DataTypes.STRING,
+                    type:DataTypes.STRING,  
 
                 },
                 description:{
