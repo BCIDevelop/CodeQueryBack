@@ -1,0 +1,9 @@
+require("dotenv").config();
+require("@babel/register");
+const path = require("path");
+
+module.exports = {
+ 
+  "models-path": path.resolve("dist", "models"),
+  "migrations-path": path.resolve("src", "migrations"),
+};

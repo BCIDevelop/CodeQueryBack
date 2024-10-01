@@ -1,0 +1,53 @@
+{
+  "name": "codequeryback",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "nodemon --exec babel-node --extensions \".ts,.js\" src/index.ts",
+    "babel": "rimraf ./dist && babel . --extensions \".ts,.js\" --ignore \"node_modules,dist\" --out-dir ./dist",
+    "prebuild": "npm install --only=dev --dev",
+    "production": "npm run babel && node ./dist/index.ts",
+    "seed": "npx ts-node seeders/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.658.1",
+    "bcryptjs": "^2.4.3",
+    "celebrate": "^15.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "express-fileupload": "^1.5.1",
+    "generate-password": "^1.7.1",
+    "joi-file-extensions": "^2.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.15",
+    "pg": "^8.13.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3",
+    "sequelize-auto-migrations-v2": "^1.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.25.6",
+    "@babel/core": "^7.25.2",
+    "@babel/node": "^7.25.0",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-typescript": "^7.24.7",
+    "@babel/register": "^7.24.6",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/express": "^5.0.0",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/jsonwebtoken": "^9.0.7",
+    "@types/morgan": "^1.9.9",
+    "@types/node": "^22.7.4",
+    "@types/nodemailer": "^6.4.16",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "nodemon": "^3.1.7",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2"
+  }
+}

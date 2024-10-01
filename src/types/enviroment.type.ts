@@ -1,0 +1,1 @@
+export  type Node_Env = "development" | "production"
