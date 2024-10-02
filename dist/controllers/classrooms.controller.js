@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
-const roles_exceptions_1 = require("../exceptions/roles.exceptions");
 const pagination_1 = require("../helpers/pagination");
-class RoleController {
+const classrooms_exceptions_1 = require("../exceptions/classrooms.exceptions");
+const sequelize_1 = require("sequelize");
+class ClassroomController {
     constructor() {
-        this.model = models_1.default.roles;
+        this.model = models_1.default.classrooms;
     }
-    listRecords(req, res) {
+    listRecordsAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { page, per_page } = req.query;
@@ -27,23 +28,54 @@ class RoleController {
                 const records = yield this.model.findAndCountAll({
                     limit,
                     offset,
+                    attributes: {
+                        exclude: ['owner_id']
+                    },
                     order: [
                         ['id', 'ASC']
-                    ],
+                    ]
                 });
                 return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
             }
             catch (error) {
+                console.log(error);
                 return res.status(500).json({ message: error.message });
             }
         });
     }
-    createRecord(req, res) {
+    listRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { name } = req.body;
-                const record = yield this.model.create({ name });
-                return res.status(201).json({ record });
+                const { page, per_page } = req.query;
+                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
+                const id = req.current_user;
+                const records = yield this.model.findAndCountAll({
+                    limit,
+                    offset,
+                    attributes: {
+                        exclude: ['owner_id']
+                    },
+                    where: {
+                        owner_id: Number(id)
+                    },
+                    order: [
+                        ['id', 'ASC']
+                    ]
+                });
+                return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: error.message });
+            }
+        });
+    }
+    createRecords(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const record = this.model.build(req.body);
+                yield record.save();
+                return res.status(201).json(record);
             }
             catch (error) {
                 return res.status(500).json({ message: error.message });
@@ -55,12 +87,18 @@ class RoleController {
             try {
                 const { id } = req.params;
                 const record = yield this.model.findOne({
+                    attributes: {
+                        exclude: ['owner_id']
+                    },
                     where: {
-                        id,
+                        [sequelize_1.Op.and]: [
+                            { owner_id: req.current_user },
+                            { id }
+                        ]
                     }
                 });
                 if (!record)
-                    throw new roles_exceptions_1.RoleNotFound();
+                    throw new classrooms_exceptions_1.ClassroomNotFound();
                 return res.status(200).json(record);
             }
             catch (error) {
@@ -71,18 +109,20 @@ class RoleController {
     updateRecordById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { id } = req.params;
+                let { body, files, params } = req;
+                const { id } = params;
                 const record = yield this.model.findOne({
+                    attributes: {
+                        exclude: ["owner_id"]
+                    },
                     where: {
                         id,
                     }
                 });
                 if (!record)
-                    throw new roles_exceptions_1.RoleNotFound();
-                record.update(req.body);
-                return res.status(200).json({
-                    message: 'Role Updated'
-                });
+                    throw new classrooms_exceptions_1.ClassroomNotFound();
+                record.update(body);
+                return res.status(200).json({ message: 'Classroom Updated' });
             }
             catch (error) {
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
@@ -99,9 +139,9 @@ class RoleController {
                     }
                 });
                 if (!record)
-                    throw new roles_exceptions_1.RoleNotFound();
-                record.update({ status: false });
-                return res.status(204).json({});
+                    throw new classrooms_exceptions_1.ClassroomNotFound();
+                record.destroy();
+                return res.status(200).json({ message: 'Classroom Eliminated' });
             }
             catch (error) {
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
@@ -109,4 +149,4 @@ class RoleController {
         });
     }
 }
-exports.default = RoleController;
+exports.default = ClassroomController;

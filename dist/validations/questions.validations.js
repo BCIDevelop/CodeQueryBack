@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const celebrate_1 = require("celebrate");
 const fileExtensions_1 = require("../helpers/fileExtensions");
-class UserValidations {
+class QuestionValidations {
     constructor() {
         this.celebrate = (0, celebrate_1.celebrator)({ reqContext: true }, { convert: true });
     }
@@ -18,27 +18,21 @@ class UserValidations {
         const joiCustom = celebrate_1.Joi.extend(fileExtensions_1.fileExtensions);
         return this.celebrate({
             [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
-                name: celebrate_1.Joi.string().required(),
-                last_name: celebrate_1.Joi.string().required(),
-                password: celebrate_1.Joi.string().required(),
-                email: celebrate_1.Joi.string().required(),
-                rol_id: celebrate_1.Joi.number().integer().required(),
-                avatar: joiCustom.file().optional()
+                classroom_id: celebrate_1.Joi.number().required(),
+                body: celebrate_1.Joi.string().required(),
+                title: celebrate_1.Joi.string().required(),
+                image: joiCustom.file().optional(),
+                tags: celebrate_1.Joi.array().optional()
             }),
         });
     }
     updateRecord() {
-        const joiCustom = celebrate_1.Joi.extend(fileExtensions_1.fileExtensions);
         return this.celebrate({
             [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
-                name: celebrate_1.Joi.string().optional(),
-                last_name: celebrate_1.Joi.string().optional(),
-                password: celebrate_1.Joi.string().optional(),
-                email: celebrate_1.Joi.string().optional(),
-                rol_id: celebrate_1.Joi.number().integer().optional(),
-                avatar: joiCustom.file().optional()
+                classroom_name: celebrate_1.Joi.string().optional(),
+                description: celebrate_1.Joi.string().optional(),
             }),
         });
     }
 }
-exports.default = new UserValidations();
+exports.default = new QuestionValidations();

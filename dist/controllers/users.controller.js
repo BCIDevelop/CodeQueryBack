@@ -54,7 +54,6 @@ class UserController {
     createRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(req.files);
                 const { email } = req.body;
                 if (req.files) {
                     const acceptedMimetypes = ['application/jpg', 'image/png', 'application/jpeg'];
@@ -88,7 +87,7 @@ class UserController {
                 });
                 if (!record)
                     throw new users_exceptions_1.UserNotFound();
-                return res.status(200).json({});
+                return res.status(200).json(record);
             }
             catch (error) {
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });

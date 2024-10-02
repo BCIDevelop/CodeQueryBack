@@ -1,71 +1,65 @@
 import models from "../models";
 import {paginationField,paginatioResults} from '../helpers/pagination'
 import { Request,Response } from 'express';
-import { ClassroomNotFound } from "../exceptions/classrooms.exceptions";
+import { QuestionNotFound } from "../exceptions/questions.exceptions";
 import { AuthenticatedRequest } from "../types/request.type";
 import { Op } from "sequelize";
 class ClassroomController{
     private model:any
 
     constructor(){
-        this.model=models.classrooms
+        this.model=models.questions
     }
-    async listRecordsAdmin(req:Request,res:Response){
-        try{
-            const {page,per_page}=req.query
-            const {limit,offset}=paginationField(Number(page),Number(per_page))
-            const records= await this.model.findAndCountAll({
+    
+    async listRecords(req: Request, res: Response) {
+        try {
+            const { page, per_page } = req.query;
+            const { limit, offset } = paginationField(Number(page), Number(per_page));
+            const  {id}=req.params
+            const records = await this.model.findAndCountAll({
                 limit,
                 offset,
-                attributes:{
-                    exclude:['owner_id']
+                attributes: {
+                    exclude: ['user_id', 'classroom_id'],
                 },
-                order:[
-                    ['id','ASC']
-                ]
-            })
-           
-            return res.status(200).json(paginatioResults(records,Number(page),Number(per_page)))
-        }
-        catch(error:any){
-            console.log(error)
-            return res.status(500).json({message:error.message})
+                where: {
+                    classroom_id:id,
+                    status: {
+                        [Op.ne]: 'SOLVED' 
+                    }
+                },
+                order: [
+                    ['id', 'ASC']
+                ],
+                include: [{
+                    model: models.users,
+                    attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id']
+                }]
+            });
+    
+            return res.status(200).json(paginatioResults(records, Number(page), Number(per_page)));
+        } catch (error: any) {
+            console.log(error);
+            return res.status(500).json({ message: error.message });
         }
     }
-    async listRecords(req:AuthenticatedRequest,res:Response){
+    async createRecords(req:AuthenticatedRequest,res:Response){
+
         try{
-            const {page,per_page}=req.query
-            const {limit,offset}=paginationField(Number(page),Number(per_page))
-            const id = req.current_user
-            const records= await this.model.findAndCountAll({
-                limit,
-                offset,
-                attributes:{
-                    exclude:['owner_id']
-                },
-                where:{
-                    owner_id : Number(id)
-                }
-                ,
-                order:[
-                    ['id','ASC']
-                ]
-            })
-           
-            return res.status(200).json(paginatioResults(records,Number(page),Number(per_page)))
-        }
-        catch(error:any){
-            console.log(error)
-            return res.status(500).json({message:error.message})
-        }
-    }
-    async createRecords(req:Request,res:Response){
-        try{
+            const transaction = await this.model.sequelize.transaction();
+            console.log(req.body)
+            req.body.user_id = req.current_user
             const record=this.model.build(req.body)
+
             await record.save()
+            if (req.body.tags) {
+                
+                await record.addTags(req.body.tags, { transaction });
+            }
+            await transaction.commit();
             return res.status(201).json(record)
         }
-        catch(error:any){
+        catch(error:any){   
             return res.status(500).json({message:error.message})
         }
     }
@@ -83,7 +77,7 @@ class ClassroomController{
                     ]
                 }
             })
-            if (!record) throw new ClassroomNotFound()
+            if (!record) throw new QuestionNotFound()
             return res.status(200).json(record)
         }
         catch(error:any){
@@ -105,7 +99,7 @@ class ClassroomController{
                     id,
                 }
             })
-            if (!record) throw new ClassroomNotFound()
+            if (!record) throw new QuestionNotFound()
             record.update(body)
 
             return res.status(200).json({message:'Classroom Updated'})
@@ -125,7 +119,7 @@ class ClassroomController{
                     id,
                 }
             })
-            if (!record) throw new ClassroomNotFound()
+            if (!record) throw new QuestionNotFound()
             record.destroy()
             return res.status(200).json({message:'Classroom Eliminated'})
         }

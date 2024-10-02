@@ -12,50 +12,59 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const users_controller_1 = __importDefault(require("../controllers/users.controller"));
 const express_1 = require("express");
-const users_validations_1 = __importDefault(require("../validations/users.validations"));
-class UserRouter {
+const classrooms_validations_1 = __importDefault(require("../validations/classrooms.validations"));
+const classrooms_controller_1 = __importDefault(require("../controllers/classrooms.controller"));
+const auth_middlewares_1 = require("../middlewares/auth.middlewares");
+class ClassroomRouter {
     constructor() {
         this.router = (0, express_1.Router)();
     }
     init() {
+        this.router.use(auth_middlewares_1.isAuthenticated);
         return this.router
-            .get('/', users_validations_1.default.listRecords(), this.all)
-            .post('/', users_validations_1.default.createRecord(), this.create)
+            .get('/admin', classrooms_validations_1.default.listRecords(), this.allAdmin)
+            .get('/', classrooms_validations_1.default.listRecords(), this.all)
+            .post('/', classrooms_validations_1.default.createRecord(), this.create)
             .get('/:id', this.getById)
-            .patch('/:id', users_validations_1.default.updateRecord(), this.updateById)
+            .patch('/:id', classrooms_validations_1.default.updateRecord(), this.updateById)
             .delete('/:id', this.deleteById);
+    }
+    allAdmin(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new classrooms_controller_1.default();
+            controllers.listRecordsAdmin(req, res);
+        });
     }
     all(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const controllers = new users_controller_1.default();
+            const controllers = new classrooms_controller_1.default();
             controllers.listRecords(req, res);
         });
     }
     create(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const controllers = new users_controller_1.default();
+            const controllers = new classrooms_controller_1.default();
             controllers.createRecords(req, res);
         });
     }
     getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const controllers = new users_controller_1.default();
+            const controllers = new classrooms_controller_1.default();
             controllers.getRecordById(req, res);
         });
     }
     updateById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const controllers = new users_controller_1.default();
+            const controllers = new classrooms_controller_1.default();
             controllers.updateRecordById(req, res);
         });
     }
     deleteById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const controllers = new users_controller_1.default();
+            const controllers = new classrooms_controller_1.default();
             controllers.deleteRecordById(req, res);
         });
     }
 }
-exports.default = new UserRouter();
+exports.default = new ClassroomRouter();
