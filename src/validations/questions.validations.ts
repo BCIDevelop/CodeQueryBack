@@ -28,10 +28,13 @@ class QuestionValidations{
         })
     }
     updateRecord(){
+        const joiCustom=Joi.extend(fileExtensions)
         return this.celebrate({
             [Segments.BODY]:Joi.object().keys({
-                classroom_name:Joi.string().optional(),
-                description:Joi.string().optional(),
+                body:Joi.string().optional(),
+                title:Joi.string().optional(),
+                image:joiCustom.file().optional(),
+                tags:Joi.array().optional()
                
             }),
         })

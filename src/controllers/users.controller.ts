@@ -4,6 +4,7 @@ import BucketS3 from "../providers/s3.provider";
 import { UserNotFound } from "../exceptions/users.exceptions";
 import { Request,Response } from 'express';
 import  { UploadedFile } from 'express-fileupload';
+import { Transaction } from "sequelize";
 class UserController{
     private model:any
     private bucket:BucketS3
@@ -45,22 +46,23 @@ class UserController{
         }
     }
     async createRecords(req:Request,res:Response){
+        const transaction: Transaction = await this.model.sequelize.transaction();
         try{
-            const {email}=req.body
-            
+            const record=this.model.build(req.body)
+            await record.hashPassword()
+            await record.save()
             if(req.files){
                 const acceptedMimetypes=['application/jpg','image/png','application/jpeg']
                 const avatar=req.files!.avatar as UploadedFile
                 if(!acceptedMimetypes.includes(avatar.mimetype)) throw new Error("File must be png,jpeg,jpg")
-                /* const urlAvatar=await this.bucket.uploadFile(avatar,email) */
+                /* const urlAvatar=await this.bucket.uploadFile(avatar,record.id) */
                 req.body['avatar']="test"
             }
-            const record=this.model.build(req.body)
-            await record.hashPassword()
-            await record.save()
+            await transaction.commit()
             return res.status(201).json(record)
         }
         catch(error:any){
+            await transaction.rollback()
             return res.status(500).json({message:error.message})
         }
     }
@@ -100,7 +102,7 @@ class UserController{
             if (!record) throw new UserNotFound()
             if (files){
                 const avatar=req.files!.avatar as UploadedFile
-                const urlAvatar=await this.bucket.uploadFile(avatar,record.username)
+                const urlAvatar=await this.bucket.uploadFile(avatar,id)
                 body["avatar"]=urlAvatar
             }
             record.update(body)

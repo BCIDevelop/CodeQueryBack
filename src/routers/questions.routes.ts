@@ -4,7 +4,7 @@ import Validation from "../validations/questions.validations";
 import QuestionController from '../controllers/questions.controller';
 import { isAuthenticated } from '../middlewares/auth.middlewares';
 
-class ClassroomRouter{
+class QuestionRouter{
     private router:Router
     constructor(){
         this.router=Router()
@@ -13,7 +13,7 @@ class ClassroomRouter{
         this.router.use(isAuthenticated)
         return this.router
         .get('/classroom/:id',Validation.listRecords(),this.all)
-        .get('/me',Validation.listRecords(),this.allMine)  
+        .get('/me/:id',Validation.listRecords(),this.allMine)  
         .post('/',Validation.createRecord(),this.create)
         .get('/:id',this.getById)
         .patch('/:id',Validation.updateRecord(),this.updateById)
@@ -23,7 +23,7 @@ class ClassroomRouter{
     async allMine(req:Request,res:Response){
         
         const controllers=new QuestionController()
-        controllers.listRecords(req,res)
+        controllers.listMyRecords(req,res)
     }
     async all(req:Request,res:Response){
         
@@ -47,4 +47,4 @@ class ClassroomRouter{
          controllers.deleteRecordById(req,res)
     }
 }
-export default new ClassroomRouter()
+export default new QuestionRouter()

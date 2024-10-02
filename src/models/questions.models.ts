@@ -22,6 +22,7 @@ class QuestionModel extends Model {
             {
                 title:{
                     type:DataTypes.STRING,
+                    unique:true,
                 },
                 body:{
                     type:DataTypes.TEXT,
