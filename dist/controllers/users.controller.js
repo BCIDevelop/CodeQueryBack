@@ -53,22 +53,24 @@ class UserController {
     }
     createRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            const transaction = yield this.model.sequelize.transaction();
             try {
-                const { email } = req.body;
+                const record = this.model.build(req.body);
+                yield record.hashPassword();
+                yield record.save();
                 if (req.files) {
                     const acceptedMimetypes = ['application/jpg', 'image/png', 'application/jpeg'];
                     const avatar = req.files.avatar;
                     if (!acceptedMimetypes.includes(avatar.mimetype))
                         throw new Error("File must be png,jpeg,jpg");
-                    /* const urlAvatar=await this.bucket.uploadFile(avatar,email) */
+                    /* const urlAvatar=await this.bucket.uploadFile(avatar,record.id) */
                     req.body['avatar'] = "test";
                 }
-                const record = this.model.build(req.body);
-                yield record.hashPassword();
-                yield record.save();
+                yield transaction.commit();
                 return res.status(201).json(record);
             }
             catch (error) {
+                yield transaction.rollback();
                 return res.status(500).json({ message: error.message });
             }
         });
@@ -111,7 +113,7 @@ class UserController {
                     throw new users_exceptions_1.UserNotFound();
                 if (files) {
                     const avatar = req.files.avatar;
-                    const urlAvatar = yield this.bucket.uploadFile(avatar, record.username);
+                    const urlAvatar = yield this.bucket.uploadFile(avatar, id);
                     body["avatar"] = urlAvatar;
                 }
                 record.update(body);

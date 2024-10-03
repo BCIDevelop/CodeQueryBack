@@ -237,6 +237,66 @@
             },
             "indexes": []
         },
+        "question_tags": {
+            "tableName": "question_tags",
+            "schema": {
+                "question_id": {
+                    "field": "question_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "questions",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "tag_id": {
+                    "field": "tag_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "tags",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "questionId": {
+                    "primaryKey": true,
+                    "references": {
+                        "model": "questions",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "field": "question_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "tagId": {
+                    "primaryKey": true,
+                    "references": {
+                        "model": "tags",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "field": "tag_id",
+                    "seqType": "Sequelize.INTEGER"
+                }
+            },
+            "indexes": []
+        },
         "roles": {
             "tableName": "roles",
             "schema": {
@@ -260,6 +320,66 @@
                     "allowNull": false,
                     "field": "updated_at",
                     "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "student_classrooms": {
+            "tableName": "student_classrooms",
+            "schema": {
+                "user_id": {
+                    "field": "user_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "classroom_id": {
+                    "field": "classroom_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "classrooms",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "classroomId": {
+                    "primaryKey": true,
+                    "references": {
+                        "model": "classrooms",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "field": "classroom_id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "userId": {
+                    "primaryKey": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "field": "user_id",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -355,5 +475,5 @@
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 3
 }

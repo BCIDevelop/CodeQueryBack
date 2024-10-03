@@ -1,7 +1,7 @@
 import {celebrator,Segments,Joi} from "celebrate"
 import { RequestHandler } from "express";
-
-class ClassroomValidations{
+import { fileExtensions } from "../helpers/fileExtensions";
+class AnswerValidations{
     private celebrate: (schema: object) => RequestHandler;
     constructor(){
         this.celebrate=celebrator({ reqContext:true},{convert:true})
@@ -15,40 +15,26 @@ class ClassroomValidations{
     })
     }
     createRecord(){
+        const joiCustom=Joi.extend(fileExtensions)
         return this.celebrate({
             [Segments.BODY]:Joi.object().keys({
-                classroom_name:Joi.string().required(),
-                description:Joi.string().required(),
-                owner_id:Joi.number().required()
+                question_id:Joi.number().required(),
+                body:Joi.string().required(),
+                image:joiCustom.file().optional(),
             }),
             
         })
     }
     updateRecord(){
+        const joiCustom=Joi.extend(fileExtensions)
         return this.celebrate({
             [Segments.BODY]:Joi.object().keys({
-                classroom_name:Joi.string().optional(),
-                description:Joi.string().optional(),
+                body:Joi.string().optional(),
+                image:joiCustom.file().optional(),
+                is_accepted:Joi.boolean().optional()
                
-            }),
-        })
-    }
-
-    addStudents(){
-        return this.celebrate({
-            [Segments.BODY]:Joi.object().keys({
-                user_id:Joi.number().required(),
-                
-               
-            }),
-        })
-    }
-    addBulkStudents(){
-        return this.celebrate({
-            [Segments.BODY]:Joi.object().keys({
-                users:Joi.array().required(),
             }),
         })
     }
 }
-export default new ClassroomValidations()
+export default new AnswerValidations()

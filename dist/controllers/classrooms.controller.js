@@ -148,5 +148,84 @@ class ClassroomController {
             }
         });
     }
+    /* STUDENTS COTROLLER LOGIC */
+    listRecordsStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { page, per_page } = req.query;
+                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
+                const { id } = req.params;
+                const recordsStudents = yield models_1.default.student_classrooms.findAndCountAll({
+                    limit,
+                    offset,
+                    attributes: [],
+                    where: {
+                        classroom_id: id
+                    },
+                    include: [{
+                            model: models_1.default.users,
+                            attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id'],
+                        },
+                    ]
+                });
+                return res.status(200).json((0, pagination_1.paginatioResults)(recordsStudents, Number(page), Number(per_page)));
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: error.message });
+            }
+        });
+    }
+    createRecordsStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.params;
+                const { user_id } = req.body;
+                const record = yield this.model.findOne({
+                    attributes: {
+                        exclude: ['user_id', 'classroom_id']
+                    },
+                    where: {
+                        id
+                    }
+                });
+                if (!record)
+                    throw new classrooms_exceptions_1.ClassroomNotFound();
+                const isUserAlreadyInClassroom = yield record.hasUsers(user_id);
+                if (isUserAlreadyInClassroom)
+                    return res.status(400).json({ message: "User is already assigned to this classroom." });
+                yield record.addUsers([user_id]);
+                return res.status(201).json({ message: "Student added" });
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: error.message });
+            }
+        });
+    }
+    createBulkStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { users } = req.body;
+            const { id } = req.params;
+            console.log(users);
+            const record = yield this.model.findOne({
+                attributes: {
+                    exclude: ['user_id', 'classroom_id']
+                },
+                where: {
+                    id
+                }
+            });
+            if (!record)
+                throw new classrooms_exceptions_1.ClassroomNotFound();
+            const usersClassroom = yield record.getUsers();
+            usersClassroom.forEach((element) => {
+                if (users.includes(element.dataValues.id))
+                    return res.status(400).json({ message: "Some user is already assigned to this classroom." });
+            });
+            yield record.addUsers(users);
+            return res.status(201).json({ message: "Students added" });
+        });
+    }
 }
 exports.default = ClassroomController;

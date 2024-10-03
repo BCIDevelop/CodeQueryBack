@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const celebrate_1 = require("celebrate");
 const fileExtensions_1 = require("../helpers/fileExtensions");
-class QuestionValidations {
+class AnswerValidations {
     constructor() {
         this.celebrate = (0, celebrate_1.celebrator)({ reqContext: true }, { convert: true });
     }
@@ -18,11 +18,9 @@ class QuestionValidations {
         const joiCustom = celebrate_1.Joi.extend(fileExtensions_1.fileExtensions);
         return this.celebrate({
             [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
-                classroom_id: celebrate_1.Joi.number().required(),
+                question_id: celebrate_1.Joi.number().required(),
                 body: celebrate_1.Joi.string().required(),
-                title: celebrate_1.Joi.string().required(),
                 image: joiCustom.file().optional(),
-                tags: celebrate_1.Joi.array().optional()
             }),
         });
     }
@@ -31,11 +29,10 @@ class QuestionValidations {
         return this.celebrate({
             [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
                 body: celebrate_1.Joi.string().optional(),
-                title: celebrate_1.Joi.string().optional(),
                 image: joiCustom.file().optional(),
-                tags: celebrate_1.Joi.array().optional()
+                is_accepted: celebrate_1.Joi.boolean().optional()
             }),
         });
     }
 }
-exports.default = new QuestionValidations();
+exports.default = new AnswerValidations();

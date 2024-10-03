@@ -7,7 +7,8 @@ class AnswerModel extends Model {
     static associate(models:Models){
         this.belongsTo(models.questions,{
             foreignKey:'question_id',
-            targetKey:'id'
+            targetKey:'id',
+            onDelete:'CASCADE'
         })
         this.belongsTo(models.users,{
             foreignKey:'user_id',

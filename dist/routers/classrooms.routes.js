@@ -28,7 +28,29 @@ class ClassroomRouter {
             .post('/', classrooms_validations_1.default.createRecord(), this.create)
             .get('/:id', this.getById)
             .patch('/:id', classrooms_validations_1.default.updateRecord(), this.updateById)
-            .delete('/:id', this.deleteById);
+            .delete('/:id', this.deleteById)
+            //Students routes
+            .get('/:id/students', classrooms_validations_1.default.listRecords(), this.allStudents)
+            .post('/:id/students', classrooms_validations_1.default.addStudents(), this.addStudents)
+            .post('/:id/students/bulk', classrooms_validations_1.default.addBulkStudents(), this.addBulkStudents);
+    }
+    addBulkStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new classrooms_controller_1.default();
+            controllers.createBulkStudents(req, res);
+        });
+    }
+    addStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new classrooms_controller_1.default();
+            controllers.createRecordsStudents(req, res);
+        });
+    }
+    allStudents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new classrooms_controller_1.default();
+            controllers.listRecordsStudents(req, res);
+        });
     }
     allAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

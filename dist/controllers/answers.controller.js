@@ -14,32 +14,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
 const pagination_1 = require("../helpers/pagination");
-const questions_exceptions_1 = require("../exceptions/questions.exceptions");
-const sequelize_1 = require("sequelize");
 const s3_provider_1 = __importDefault(require("../providers/s3.provider"));
 const imageManage_1 = require("../helpers/imageManage");
-class QuestionController {
+const answers_exceptions_1 = require("../exceptions/answers.exceptions");
+const questions_exceptions_1 = require("../exceptions/questions.exceptions");
+class AnswerController {
     constructor() {
-        this.model = models_1.default.questions;
-        this.bucket = new s3_provider_1.default('questions');
+        this.model = models_1.default.answers;
+        this.bucket = new s3_provider_1.default('answers');
     }
     listRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { page, per_page } = req.query;
                 const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
-                const { id } = req.params;
+                const { question_id } = req.params;
                 const records = yield this.model.findAndCountAll({
                     limit,
                     offset,
                     attributes: {
-                        exclude: ['user_id', 'classroom_id'],
+                        exclude: ['question_id', 'user_id'],
                     },
                     where: {
-                        classroom_id: id,
-                        status: {
-                            [sequelize_1.Op.ne]: 'SOLVED'
-                        }
+                        question_id
                     },
                     order: [
                         ['id', 'ASC']
@@ -48,11 +45,6 @@ class QuestionController {
                             model: models_1.default.users,
                             attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id']
                         },
-                        {
-                            model: models_1.default.tags,
-                            attributes: ['name'],
-                            through: { attributes: [] }
-                        }
                     ]
                 });
                 return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
@@ -65,7 +57,6 @@ class QuestionController {
     }
     createRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            const transaction = yield this.model.sequelize.transaction();
             try {
                 req.body.user_id = req.current_user;
                 if (req.files) {
@@ -75,49 +66,9 @@ class QuestionController {
                 }
                 const record = this.model.build(req.body);
                 yield record.save();
-                if (req.body.tags) {
-                    yield record.addTags(req.body.tags, { transaction });
-                }
-                yield transaction.commit();
                 return res.status(201).json(record);
             }
             catch (error) {
-                yield transaction.rollback();
-                return res.status(500).json({ message: error.message });
-            }
-        });
-    }
-    listMyRecords(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { page, per_page } = req.query;
-                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
-                const { id } = req.params;
-                const records = yield this.model.findAndCountAll({
-                    limit,
-                    offset,
-                    attributes: {
-                        exclude: ['user_id', 'classroom_id'],
-                    },
-                    where: {
-                        classroom_id: id,
-                        user_id: req.current_user,
-                    },
-                    order: [
-                        ['id', 'ASC']
-                    ],
-                    include: [
-                        {
-                            model: models_1.default.tags,
-                            attributes: ['name'],
-                            through: { attributes: [] }
-                        }
-                    ]
-                });
-                return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
-            }
-            catch (error) {
-                console.log(error);
                 return res.status(500).json({ message: error.message });
             }
         });
@@ -128,27 +79,19 @@ class QuestionController {
                 const { id } = req.params;
                 const record = yield this.model.findOne({
                     attributes: {
-                        exclude: ['user_id', 'classroom_id']
+                        exclude: ['question_id', 'user_id']
                     },
                     where: {
-                        [sequelize_1.Op.and]: [
-                            { user_id: req.current_user },
-                            { id }
-                        ]
+                        id
                     },
                     include: [{
                             model: models_1.default.users,
                             attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id']
                         },
-                        {
-                            model: models_1.default.tags,
-                            attributes: ['name'],
-                            through: { attributes: [] }
-                        }
                     ]
                 });
                 if (!record)
-                    throw new questions_exceptions_1.QuestionNotFound();
+                    throw new answers_exceptions_1.AnswerNotFound();
                 return res.status(200).json(record);
             }
             catch (error) {
@@ -162,27 +105,38 @@ class QuestionController {
             try {
                 let { body, files, params } = req;
                 const { id } = params;
-                const { tags } = body;
                 const record = yield this.model.findOne({
                     attributes: {
-                        exclude: ["user_id", "classroom_id"]
+                        exclude: ['user_id']
                     },
                     where: {
                         id,
                     }
                 });
                 if (!record)
-                    throw new questions_exceptions_1.QuestionNotFound();
+                    throw new answers_exceptions_1.AnswerNotFound();
                 if (files) {
                     (0, imageManage_1.validateImage)(files.image);
                     /* const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,record.image) */
                     req.body['image'] = "test";
                 }
-                if (tags)
-                    yield record.setTags(tags, { transaction });
-                record.update(body);
+                if (body.is_accepted) {
+                    const record_question = yield models_1.default.questions.findOne({
+                        attributes: {
+                            exclude: ["user_id", "classroom_id"]
+                        },
+                        where: {
+                            id: record.question_id
+                        }
+                    });
+                    if (!record_question)
+                        throw new questions_exceptions_1.QuestionNotFound();
+                    record_question.status = 'SOLVED';
+                    yield record_question.update(record_question.dataValues, { transaction });
+                }
+                yield record.update(body, { transaction });
                 yield transaction.commit();
-                return res.status(200).json({ message: 'Classroom Updated' });
+                return res.status(200).json({ message: 'Answer Updated' });
             }
             catch (error) {
                 yield transaction.rollback();
@@ -200,9 +154,9 @@ class QuestionController {
                     }
                 });
                 if (!record)
-                    throw new questions_exceptions_1.QuestionNotFound();
+                    throw new answers_exceptions_1.AnswerNotFound();
                 record.destroy();
-                return res.status(200).json({ message: 'Question Eliminated' });
+                return res.status(200).json({ message: 'Answer Eliminated' });
             }
             catch (error) {
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
@@ -210,4 +164,4 @@ class QuestionController {
         });
     }
 }
-exports.default = QuestionController;
+exports.default = AnswerController;

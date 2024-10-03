@@ -18,6 +18,7 @@ class QuestionModel extends sequelize_1.Model {
         return super.init({
             title: {
                 type: sequelize_1.DataTypes.STRING,
+                unique: true,
             },
             body: {
                 type: sequelize_1.DataTypes.TEXT,

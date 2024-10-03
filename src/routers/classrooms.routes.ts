@@ -9,6 +9,7 @@ class ClassroomRouter{
     constructor(){
         this.router=Router()
     }
+   
     init(){
         this.router.use(isAuthenticated)
         return this.router
@@ -18,8 +19,27 @@ class ClassroomRouter{
         .get('/:id',this.getById)
         .patch('/:id',Validation.updateRecord(),this.updateById)
         .delete('/:id',this.deleteById)
+        //Students routes
+        .get('/:id/students',Validation.listRecords(),this.allStudents)
+        .post('/:id/students',Validation.addStudents(),this.addStudents)
+        .post('/:id/students/bulk',Validation.addBulkStudents(),this.addBulkStudents)
     }
 
+    async addBulkStudents(req:Request,res:Response){
+        
+        const controllers=new ClassroomController()
+         controllers.createBulkStudents(req,res)
+    }
+    async addStudents(req:Request,res:Response){
+        
+        const controllers=new ClassroomController()
+         controllers.createRecordsStudents(req,res)
+    }
+    async allStudents(req:Request,res:Response){
+        
+        const controllers=new ClassroomController()
+         controllers.listRecordsStudents(req,res)
+    }
     async allAdmin(req:Request,res:Response){
         
         const controllers=new ClassroomController()
