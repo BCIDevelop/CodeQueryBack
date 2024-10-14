@@ -5,6 +5,11 @@ class MessageModel extends sequelize_1.Model {
     static associate(models) {
         this.belongsTo(models.chats, {
             foreignKey: 'chat_id',
+            targetKey: 'id',
+            onDelete: 'CASCADE'
+        });
+        this.belongsTo(models.users, {
+            foreignKey: 'owner_id',
             targetKey: 'id'
         });
     }
@@ -14,6 +19,9 @@ class MessageModel extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.TEXT,
             },
             chat_id: {
+                type: sequelize_1.DataTypes.INTEGER,
+            },
+            owner_id: {
                 type: sequelize_1.DataTypes.INTEGER,
             }
         }, {

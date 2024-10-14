@@ -73,10 +73,24 @@
                 },
                 "sender_id": {
                     "field": "sender_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "receiver_id": {
                     "field": "receiver_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
+                    "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
                 "created_at": {
@@ -156,6 +170,17 @@
                         "key": "id"
                     },
                     "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "owner_id": {
+                    "field": "owner_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "users",
+                        "key": "id"
+                    },
+                    "onDelete": "NO ACTION",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
                 },
@@ -444,6 +469,11 @@
                     "field": "avatar",
                     "seqType": "Sequelize.STRING"
                 },
+                "token": {
+                    "allowNull": true,
+                    "field": "token",
+                    "seqType": "Sequelize.STRING"
+                },
                 "rol_id": {
                     "field": "rol_id",
                     "allowNull": true,
@@ -462,6 +492,11 @@
                     "field": "active_status",
                     "seqType": "Sequelize.BOOLEAN"
                 },
+                "last_message": {
+                    "allowNull": true,
+                    "field": "last_message",
+                    "seqType": "Sequelize.STRING"
+                },
                 "created_at": {
                     "allowNull": false,
                     "field": "created_at",
@@ -476,5 +511,5 @@
             "indexes": []
         }
     },
-    "revision": 4
+    "revision": 1
 }

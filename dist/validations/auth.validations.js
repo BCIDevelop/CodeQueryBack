@@ -39,5 +39,13 @@ class AuthValidation {
             })
         });
     }
+    confirmAccount() {
+        return this.celebrate({
+            [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
+                email: celebrate_1.Joi.string().required(),
+                token: celebrate_1.Joi.string().required()
+            })
+        });
+    }
 }
 exports.default = new AuthValidation();

@@ -7,7 +7,7 @@ const rolesSeed = [
     { id:1,name: 'Student' },
     { id:2,name: 'Teacher' },
   ];
-  let passwordHash=hashSync('admin123',genSaltSync(auth.rounds))
+  let passwordHash=hashSync('Admin123',genSaltSync(auth.rounds))
   const usersSeed = [
     { id:1,password: passwordHash, rol_id: 1 , email:"admin@gmail.com",last_name:"admin",active_status:true,name:"admin"}
     

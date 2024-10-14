@@ -13,6 +13,9 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
         this.hasMany(models.classrooms,{foreignKey:'owner_id'})
         this.hasMany(models.questions,{foreignKey:'user_id'})
         this.hasMany(models.answers,{foreignKey:'user_id'})
+        this.hasMany(models.chats,{foreignKey:'receiver_id'})
+        this.hasMany(models.chats,{foreignKey:'sender_id'})
+        this.hasMany(models.messages,{foreignKey:'owner_id'})
     }
     static initModel(sequelize:Sequelize){
         return super.init(
@@ -36,12 +39,22 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
 
                 }
                 ,
+                token:{
+                    type:DataTypes.STRING,
+                    allowNull:true,
+
+                }
+                ,
                 rol_id:{
                     type:DataTypes.INTEGER,
                 },
                 active_status:{
                     type:DataTypes.BOOLEAN,
                     defaultValue:false // false
+                },
+                last_message:{
+                    type:DataTypes.STRING,
+                    allowNull:true,
                 }
             },
             {

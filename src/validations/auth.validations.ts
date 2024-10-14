@@ -40,6 +40,15 @@ class AuthValidation{
             })
         })
     }
+    confirmAccount(){
+        return this.celebrate({
+            [Segments.BODY]:Joi.object().keys({
+                email:Joi.string().required(),
+                token:Joi.string().required()
+                
+            })
+        })
+    }
 
 }
 

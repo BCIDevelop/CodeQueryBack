@@ -13,11 +13,12 @@ class AuthRouter{
         .post("/refresh_token",Validation.refreshtoken(),this.refreshToken)
         .post("/reset_password",Validation.resetPassword(),this.resetPassword)
         .post("/signUp",Validation.signUp(),this.signUp)
-
-        
-      
+        .patch("/confirm",Validation.confirmAccount(),this.confirmAccount)
     }
-    //listado
+    async confirmAccount(req:Request,res:Response){
+        const controller=new AuthController()
+         controller.confirmAccount(req,res)
+     }
     async signIn(req:Request,res:Response){
        const controller=new AuthController()
         controller.signIn(req,res)

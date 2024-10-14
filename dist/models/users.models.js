@@ -25,6 +25,9 @@ class UserModel extends sequelize_1.Model {
         this.hasMany(models.classrooms, { foreignKey: 'owner_id' });
         this.hasMany(models.questions, { foreignKey: 'user_id' });
         this.hasMany(models.answers, { foreignKey: 'user_id' });
+        this.hasMany(models.chats, { foreignKey: 'receiver_id' });
+        this.hasMany(models.chats, { foreignKey: 'sender_id' });
+        this.hasMany(models.messages, { foreignKey: 'owner_id' });
     }
     static initModel(sequelize) {
         return super.init({
@@ -45,12 +48,20 @@ class UserModel extends sequelize_1.Model {
                 type: sequelize_1.DataTypes.STRING,
                 allowNull: true,
             },
+            token: {
+                type: sequelize_1.DataTypes.STRING,
+                allowNull: true,
+            },
             rol_id: {
                 type: sequelize_1.DataTypes.INTEGER,
             },
             active_status: {
                 type: sequelize_1.DataTypes.BOOLEAN,
                 defaultValue: false // false
+            },
+            last_message: {
+                type: sequelize_1.DataTypes.STRING,
+                allowNull: true,
             }
         }, {
             sequelize,

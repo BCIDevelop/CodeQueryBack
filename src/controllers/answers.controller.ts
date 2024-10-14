@@ -2,7 +2,6 @@ import models from "../models";
 import {paginationField,paginatioResults} from '../helpers/pagination'
 import { Request,Response } from 'express';
 import { AuthenticatedRequest } from "../types/request.type";
-import { Op } from "sequelize";
 import { UploadedFile } from "express-fileupload";
 import BucketS3 from "../providers/s3.provider";
 import { addSugar, validateImage } from "../helpers/imageManage";
