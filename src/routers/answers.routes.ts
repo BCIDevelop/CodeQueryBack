@@ -17,8 +17,13 @@ class AnswerRouter{
         .get('/:id',this.getById)
         .patch('/:id',Validation.updateRecord(),this.updateById)
         .delete('/:id',this.deleteById)
+        .get('/classroom/:classroom_id',Validation.listRecords(),this.allByClassroom)
     }
-
+    async allByClassroom(req:Request,res:Response){
+        
+        const controllers=new AnswerController()
+        controllers.listRecordsByClassrooms(req,res)
+    }
     async all(req:Request,res:Response){
         
         const controllers=new AnswerController()

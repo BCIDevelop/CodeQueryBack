@@ -11,6 +11,7 @@ class ClassRoomModel extends Model {
             targetKey:'id'
         })
         this.hasMany(models.questions,{foreignKey:'classroom_id'})
+        this.hasMany(models.answers,{foreignKey:'classroom_id'})
     }
     static initModel(sequelize:Sequelize){
         return super.init(

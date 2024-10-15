@@ -22,7 +22,8 @@ class QuestionValidations {
                 body: celebrate_1.Joi.string().required(),
                 title: celebrate_1.Joi.string().required(),
                 image: joiCustom.file().optional(),
-                tags: celebrate_1.Joi.array().optional()
+                tags: celebrate_1.Joi.array().optional(),
+                created_at: celebrate_1.Joi.string().optional(), // TODO: TESTING PURPOSE
             }),
         });
     }

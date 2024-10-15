@@ -8,6 +8,13 @@ export default async(socket:Socket,io:Server)=> {
                 const {message,owner_id} = data
                 const record=models.messages.build({message,chat_id,owner_id})
                 await record.save()
+                const recordUser =await models.users.findOne({
+                    where:{
+                        id:owner_id
+                    },
+                })
+                recordUser.last_message = message 
+                await recordUser.save()
                 socket.broadcast.in(chat_id).emit('incommingMessage',record)  
                 ack({ success: true, record })
             } catch (error:any) {

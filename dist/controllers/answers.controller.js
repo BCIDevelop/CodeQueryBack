@@ -23,6 +23,33 @@ class AnswerController {
         this.model = models_1.default.answers;
         this.bucket = new s3_provider_1.default('answers');
     }
+    listRecordsByClassrooms(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { page, per_page } = req.query;
+                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
+                const { classroom_id } = req.params;
+                const records = yield this.model.findAndCountAll({
+                    limit,
+                    offset,
+                    attributes: {
+                        exclude: ['body', 'image',],
+                    },
+                    where: {
+                        classroom_id
+                    },
+                    order: [
+                        ['id', 'ASC']
+                    ],
+                });
+                return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: error.message });
+            }
+        });
+    }
     listRecords(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

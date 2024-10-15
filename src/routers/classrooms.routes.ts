@@ -23,8 +23,9 @@ class ClassroomRouter{
         .get('/:id/students',Validation.listRecords(),this.allStudents)
         .post('/:id/students',Validation.addStudents(),this.addStudents)
         .post('/:id/students/bulk',Validation.addBulkStudents(),this.addBulkStudents)
+      
     }
-
+    
     async addBulkStudents(req:Request,res:Response){
         
         const controllers=new ClassroomController()

@@ -34,14 +34,21 @@ class ChatController {
                     attributes: {
                         exclude: ['sender_id']
                     },
-                    include: [{
+                    include: [
+                        {
                             model: models_1.default.users,
-                            attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id'],
+                            as: 'sender',
+                            attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id', 'last_message'],
                         },
+                        {
+                            model: models_1.default.users,
+                            as: 'receiver',
+                            attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id', 'last_message'],
+                        }
                     ],
                     where: {
                         [sequelize_1.Op.or]: [
-                            { sender_id: user_id, },
+                            { sender_id: user_id },
                             { receiver_id: user_id }
                         ]
                     },
@@ -49,6 +56,20 @@ class ChatController {
                         ['id', 'ASC']
                     ]
                 });
+                const recordsFiltered = records.rows.map((element) => {
+                    if (element.sender.id === user_id) {
+                        return {
+                            id: element.id,
+                            user: element.receiver
+                        };
+                    }
+                    return {
+                        id: element.id,
+                        user: element.sender
+                    };
+                });
+                records.rows = recordsFiltered;
+                // Devuelve los resultados filtrados con paginación
                 return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
             }
             catch (error) {

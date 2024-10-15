@@ -3,7 +3,8 @@ import {paginationField,paginatioResults} from '../helpers/pagination'
 import { Request,Response } from 'express';
 import { ClassroomNotFound } from "../exceptions/classrooms.exceptions";
 import { AuthenticatedRequest } from "../types/request.type";
-import { Op } from "sequelize";
+import { Model, Op } from "sequelize";
+import { RecordModel } from "../types/sequelize.type";
 class ClassroomController{
     private model:any
 
@@ -47,11 +48,19 @@ class ClassroomController{
                     owner_id : Number(id)
                 }
                 ,
-                order:[
-                    ['id','ASC']
+        
+                include: [{
+                    model: models.questions,
+                    attributes: ['id'],
+                    
+                },
                 ]
             })
-           
+            
+            const recordOrdered = records.rows.sort((a:RecordModel,b:RecordModel)=>{
+                return b.questions!.length - a.questions!.length 
+            })
+            records.rows= recordOrdered 
             return res.status(200).json(paginatioResults(records,Number(page),Number(per_page)))
         }
         catch(error:any){

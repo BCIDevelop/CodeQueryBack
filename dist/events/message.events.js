@@ -20,6 +20,13 @@ exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* ()
             const { message, owner_id } = data;
             const record = models_1.default.messages.build({ message, chat_id, owner_id });
             yield record.save();
+            const recordUser = yield models_1.default.users.findOne({
+                where: {
+                    id: owner_id
+                },
+            });
+            recordUser.last_message = message;
+            yield recordUser.save();
             socket.broadcast.in(chat_id).emit('incommingMessage', record);
             ack({ success: true, record });
         }

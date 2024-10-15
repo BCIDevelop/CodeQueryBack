@@ -14,7 +14,11 @@ class AnswerModel extends Model {
             foreignKey:'user_id',
             targetKey:'id'
         })
-        
+        this.belongsTo(models.classrooms,{
+            foreignKey:'classroom_id',
+            targetKey:'id',
+            onDelete:'CASCADE'
+        })
     }
     static initModel(sequelize:Sequelize){
         return super.init(
@@ -35,6 +39,9 @@ class AnswerModel extends Model {
                 is_accepted:{
                     type:DataTypes.BOOLEAN,
                     defaultValue:false
+                },
+                classroom_id:{
+                    type:DataTypes.INTEGER,
                 }
 
             },

@@ -15,7 +15,32 @@ class AnswerController{
         this.model=models.answers
         this.bucket=new BucketS3('answers')
     }
+    async listRecordsByClassrooms(req:Request,res:Response){
+        try {
+            const { page, per_page } = req.query;
+            const { limit, offset } = paginationField(Number(page), Number(per_page));
+            const  {classroom_id}=req.params
+            const records = await this.model.findAndCountAll({
+                limit,
+                offset,
+                attributes: ['created_at'],
+                where: {
+                    classroom_id
+                },
+                
+                order: [
+                    ['id', 'ASC']
+                ],
+                
+            });
     
+            return res.status(200).json(paginatioResults(records, Number(page), Number(per_page)));
+        } catch (error: any) {
+            console.log(error);
+            return res.status(500).json({ message: error.message });
+        }
+
+    }
     async listRecords(req: Request, res: Response) {
         try {
             const { page, per_page } = req.query;

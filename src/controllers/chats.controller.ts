@@ -29,12 +29,12 @@ class ChatController{
                     {
                         model: models.users,
                         as: 'sender',
-                        attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id'],
+                        attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id','last_message'],
                     },
                     {
                         model: models.users,
                         as: 'receiver',
-                        attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id'],
+                        attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id','last_message'],
                     }
                 ],
                 where: {

@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = (socket) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on('disconnect', () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('Se ha eliminado el cliente ');
+        const chatId = socket.handshake.query.chatId;
+        socket.broadcast.in(chatId).emit('leave');
     }));
 });

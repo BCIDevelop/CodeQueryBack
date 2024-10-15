@@ -50,5 +50,6 @@ class ClassroomValidations{
             }),
         })
     }
+  
 }
 export default new ClassroomValidations()

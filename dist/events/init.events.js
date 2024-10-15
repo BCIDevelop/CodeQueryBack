@@ -15,8 +15,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
 exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on('join', () => __awaiter(void 0, void 0, void 0, function* () {
+        /* Handle status */
         try {
             const chatId = socket.handshake.query.chatId;
+            const sockets = yield io.in(chatId).fetchSockets();
+            if (sockets.length > 1)
+                io.in(chatId).emit('online');
+            else
+                socket.broadcast.in(chatId).emit('online');
             const record = yield models_1.default.messages.findAndCountAll({
                 limit: 7,
                 offset: 0,

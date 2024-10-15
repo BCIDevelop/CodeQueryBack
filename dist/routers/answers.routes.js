@@ -27,7 +27,14 @@ class AnswerRouter {
             .post('/', answers_validations_1.default.createRecord(), this.create)
             .get('/:id', this.getById)
             .patch('/:id', answers_validations_1.default.updateRecord(), this.updateById)
-            .delete('/:id', this.deleteById);
+            .delete('/:id', this.deleteById)
+            .get('/classroom/:classroom_id', answers_validations_1.default.listRecords(), this.allByClassroom);
+    }
+    allByClassroom(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new answers_controller_1.default();
+            controllers.listRecordsByClassrooms(req, res);
+        });
     }
     all(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
