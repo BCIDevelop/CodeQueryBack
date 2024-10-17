@@ -13,6 +13,10 @@ class StudentClassroomModel extends sequelize_1.Model {
             },
             classroom_id: {
                 type: sequelize_1.DataTypes.INTEGER,
+            },
+            status: {
+                type: sequelize_1.DataTypes.STRING,
+                defaultValue: "PENDING"
             }
         }, {
             sequelize,

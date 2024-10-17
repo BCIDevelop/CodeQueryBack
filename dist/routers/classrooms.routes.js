@@ -32,7 +32,14 @@ class ClassroomRouter {
             //Students routes
             .get('/:id/students', classrooms_validations_1.default.listRecords(), this.allStudents)
             .post('/:id/students', classrooms_validations_1.default.addStudents(), this.addStudents)
-            .post('/:id/students/bulk', classrooms_validations_1.default.addBulkStudents(), this.addBulkStudents);
+            .post('/:id/students/bulk', classrooms_validations_1.default.addBulkStudents(), this.addBulkStudents)
+            .delete('/:id/student/:user_id', this.deleteStudent);
+    }
+    deleteStudent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new classrooms_controller_1.default();
+            controllers.deleteStudent(req, res);
+        });
     }
     addBulkStudents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

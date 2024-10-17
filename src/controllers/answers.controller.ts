@@ -173,5 +173,27 @@ class AnswerController{
             return res.status(error?.code|| 500).json({message:error.message})
         }
     }
+    async listScoreStudent(req:AuthenticatedRequest,res:Response){
+        try {
+            const {classroom_id,user_id} = req.params
+            const { page, per_page } = req.query;
+            const { limit, offset } = paginationField(Number(page), Number(per_page));
+            const records = await this.model.findAndCountAll({
+                limit,
+                offset,
+                attributes: ["created_at"],
+                where: {
+                    classroom_id ,
+                    user_id
+                },
+            })
+            return res.status(200).json(paginatioResults(records, Number(page), Number(per_page)));
+        } catch (error:any) {
+            console.log(error)
+            return res.status(error?.code|| 500).json({message:error.message})
+        }
+       
+
+    }
 }
 export default AnswerController

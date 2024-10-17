@@ -17,6 +17,10 @@ class StudentClassroomModel extends Model {
                 },
                 classroom_id:{
                     type:DataTypes.INTEGER,
+                },
+                status:{
+                    type:DataTypes.STRING,
+                    defaultValue:"PENDING"
                 }
             },
             {

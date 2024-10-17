@@ -48,6 +48,17 @@
                     "field": "is_accepted",
                     "seqType": "Sequelize.BOOLEAN"
                 },
+                "classroom_id": {
+                    "field": "classroom_id",
+                    "allowNull": true,
+                    "references": {
+                        "model": "classrooms",
+                        "key": "id"
+                    },
+                    "onDelete": "CASCADE",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
                 "created_at": {
                     "allowNull": false,
                     "field": "created_at",
@@ -511,5 +522,5 @@
             "indexes": []
         }
     },
-    "revision": 1
+    "revision": 2
 }

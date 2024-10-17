@@ -21,6 +21,8 @@ class AnswerValidations {
                 question_id: celebrate_1.Joi.number().required(),
                 body: celebrate_1.Joi.string().required(),
                 image: joiCustom.file().optional(),
+                classroom_id: celebrate_1.Joi.number().required(),
+                created_at: celebrate_1.Joi.string().optional(), // TODO: TESTING PURPOSE
             }),
         });
     }

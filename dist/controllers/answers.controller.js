@@ -32,9 +32,7 @@ class AnswerController {
                 const records = yield this.model.findAndCountAll({
                     limit,
                     offset,
-                    attributes: {
-                        exclude: ['body', 'image',],
-                    },
+                    attributes: ['created_at'],
                     where: {
                         classroom_id
                     },

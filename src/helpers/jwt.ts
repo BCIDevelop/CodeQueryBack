@@ -13,3 +13,8 @@ export const createTokens=(payload:{})=>{
 export const verifyToken=(token:string)=>{
     return verify(token,auth!.secretKey!)
 }
+export const createToken=(payload:{})=>{
+    const {secretKey,refreshExpire}=auth
+    const token=sign(payload,secretKey!,{expiresIn:refreshExpire})
+    return token
+}

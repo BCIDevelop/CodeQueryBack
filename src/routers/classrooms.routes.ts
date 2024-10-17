@@ -23,9 +23,18 @@ class ClassroomRouter{
         .get('/:id/students',Validation.listRecords(),this.allStudents)
         .post('/:id/students',Validation.addStudents(),this.addStudents)
         .post('/:id/students/bulk',Validation.addBulkStudents(),this.addBulkStudents)
+        .delete('/:id/student/:user_id',this.deleteStudent)
+        .patch('/student/confirm',Validation.confirmStudent(),this.confirmStudent)
       
     }
-    
+    async confirmStudent(req:Request,res:Response){
+        const controllers=new ClassroomController()
+        controllers.confirmStudentClassroom(req,res)
+    }
+    async deleteStudent(req:Request,res:Response){
+        const controllers=new ClassroomController()
+         controllers.deleteStudent(req,res)
+    }
     async addBulkStudents(req:Request,res:Response){
         
         const controllers=new ClassroomController()

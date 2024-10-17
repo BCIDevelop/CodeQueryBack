@@ -20,11 +20,8 @@ class AuthController{
                     email
                 }
             })
-            // Usuario no existe
             if(!record) throw new UserNotFound()
-            //Usario inhabilitado
             if (!record.active_status) throw new UserInactive()
-            //Contra incorrecta
             const validatePassword=await record.validatePassword(password)
             if (!validatePassword) throw new UserIncorretPassword()
             const {rol_id,last_name,name} = record

@@ -16,9 +16,11 @@ const models_1 = __importDefault(require("../models"));
 const pagination_1 = require("../helpers/pagination");
 const classrooms_exceptions_1 = require("../exceptions/classrooms.exceptions");
 const sequelize_1 = require("sequelize");
+const users_exceptions_1 = require("../exceptions/users.exceptions");
 class ClassroomController {
     constructor() {
         this.model = models_1.default.classrooms;
+        this.modelUsers = models_1.default.users;
     }
     listRecordsAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -58,10 +60,16 @@ class ClassroomController {
                     where: {
                         owner_id: Number(id)
                     },
-                    order: [
-                        ['id', 'ASC']
+                    include: [{
+                            model: models_1.default.questions,
+                            attributes: ['id'],
+                        },
                     ]
                 });
+                const recordOrdered = records.rows.sort((a, b) => {
+                    return b.questions.length - a.questions.length;
+                });
+                records.rows = recordOrdered;
                 return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
             }
             catch (error) {
@@ -164,7 +172,7 @@ class ClassroomController {
                     },
                     include: [{
                             model: models_1.default.users,
-                            attributes: ['id', 'name', 'last_name', 'avatar', 'rol_id'],
+                            attributes: ['id', 'name', 'last_name', 'avatar', 'email'],
                         },
                     ]
                 });
@@ -180,7 +188,8 @@ class ClassroomController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.params;
-                const { user_id } = req.body;
+                const { email } = req.body;
+                console.log(id);
                 const record = yield this.model.findOne({
                     attributes: {
                         exclude: ['user_id', 'classroom_id']
@@ -191,10 +200,20 @@ class ClassroomController {
                 });
                 if (!record)
                     throw new classrooms_exceptions_1.ClassroomNotFound();
-                const isUserAlreadyInClassroom = yield record.hasUsers(user_id);
+                const recordUser = yield this.modelUsers.findOne({
+                    attributes: ['rol_id', 'id'],
+                    where: {
+                        email
+                    }
+                });
+                if (!recordUser)
+                    throw new users_exceptions_1.UserNotFound();
+                if (recordUser.rol_id == 2)
+                    return res.status(400).json({ message: "User is a teacher." });
+                const isUserAlreadyInClassroom = yield record.hasUsers(recordUser.id);
                 if (isUserAlreadyInClassroom)
                     return res.status(400).json({ message: "User is already assigned to this classroom." });
-                yield record.addUsers([user_id]);
+                yield record.addUsers([recordUser.id], { through: { status: "PENDING" } });
                 return res.status(201).json({ message: "Student added" });
             }
             catch (error) {
@@ -207,7 +226,6 @@ class ClassroomController {
         return __awaiter(this, void 0, void 0, function* () {
             const { users } = req.body;
             const { id } = req.params;
-            console.log(users);
             const record = yield this.model.findOne({
                 attributes: {
                     exclude: ['user_id', 'classroom_id']
@@ -225,6 +243,23 @@ class ClassroomController {
             });
             yield record.addUsers(users);
             return res.status(201).json({ message: "Students added" });
+        });
+    }
+    deleteStudent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id, user_id } = req.params;
+            const record = yield this.model.findOne({
+                attributes: {
+                    exclude: ['user_id', 'classroom_id']
+                },
+                where: {
+                    id
+                }
+            });
+            if (!record)
+                throw new classrooms_exceptions_1.ClassroomNotFound();
+            yield record.removeUsers(user_id);
+            return res.status(200).json({ message: "Students deleted" });
         });
     }
 }

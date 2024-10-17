@@ -18,6 +18,8 @@ class AnswerRouter{
         .patch('/:id',Validation.updateRecord(),this.updateById)
         .delete('/:id',this.deleteById)
         .get('/classroom/:classroom_id',Validation.listRecords(),this.allByClassroom)
+        .get('/classroom/:classroom_id/student/:user_id',Validation.listRecords(),this.getScoreStudent)
+        
     }
     async allByClassroom(req:Request,res:Response){
         
@@ -45,5 +47,10 @@ class AnswerRouter{
         const controllers=new AnswerController()
          controllers.deleteRecordById(req,res)
     }
+    async getScoreStudent(req:Request,res:Response){
+        const controllers=new AnswerController()
+         controllers.listScoreStudent(req,res)
+    }
+    
 }
 export default new AnswerRouter()

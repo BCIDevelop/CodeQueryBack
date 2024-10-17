@@ -37,7 +37,16 @@ class ClassroomValidations{
     addStudents(){
         return this.celebrate({
             [Segments.BODY]:Joi.object().keys({
-                user_id:Joi.number().required(),
+                email:Joi.string().required(),
+                
+               
+            }),
+        })
+    }
+    confirmStudent(){
+        return this.celebrate({
+            [Segments.BODY]:Joi.object().keys({
+                token:Joi.string().required(),
                 
                
             }),
