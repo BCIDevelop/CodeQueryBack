@@ -2,6 +2,7 @@ import { Router ,Request,Response} from "express";
 import Validation from '../validations/auth.validations'
 import AuthController from "../controllers/auth.controller";
 import { passportFBCallback, passportFBConfiguration } from "../middlewares/passportFB.middleware";
+import { passportGmailCallback, passportGmailConfiguration } from "../middlewares/passportGmail.middleware";
 
 
 class AuthRouter{
@@ -21,7 +22,8 @@ class AuthRouter{
         .get("/facebook",(req,res,next)=>passportFBConfiguration(req,res,next))
         .get('/facebook/callback',(req,res,next)=>passportFBCallback(req,res,next))
             
-
+        .get("/gmail",(req,res,next)=>passportGmailConfiguration(req,res,next))
+        .get('/gmail/callback',(req,res,next)=>passportGmailCallback(req,res,next))
     }
     
     async confirmAccount(req:Request,res:Response){
