@@ -6,6 +6,9 @@ import {errors} from 'celebrate'
 import morgan from "morgan";
 import SocketIO from './socketio';
 import { createServer } from 'http';
+import passport from 'passport'
+
+
 import http from "http";
 class Server {
     public app: Express
@@ -44,6 +47,9 @@ class Server {
     socketioInit(){
         const socket=new SocketIO(this.server)
         socket.init()
+    }
+    passportConfig():void{
+        
     }
 }
 
