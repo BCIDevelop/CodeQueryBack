@@ -15,6 +15,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.658.1",
     "@types/passport-google-oauth20": "^2.0.16",
+    "axios": "^1.7.7",
     "bcryptjs": "^2.4.3",
     "celebrate": "^15.0.3",
     "cors": "^2.8.5",
@@ -34,7 +35,8 @@
     "sequelize": "^6.37.3",
     "sequelize-auto-migrations-v2": "^1.2.1",
     "socket.io": "^4.8.0",
-    "socketio": "^1.0.0"
+    "socketio": "^1.0.0",
+    "vm": "^0.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
