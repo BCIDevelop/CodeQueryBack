@@ -16,11 +16,14 @@ const models_1 = __importDefault(require("../models"));
 const pagination_1 = require("../helpers/pagination");
 const classrooms_exceptions_1 = require("../exceptions/classrooms.exceptions");
 const sequelize_1 = require("sequelize");
+const mail_provider_1 = __importDefault(require("../providers/mail.provider"));
 const users_exceptions_1 = require("../exceptions/users.exceptions");
+const jwt_1 = require("../helpers/jwt");
 class ClassroomController {
     constructor() {
         this.model = models_1.default.classrooms;
         this.modelUsers = models_1.default.users;
+        this.modelStudentClassroom = models_1.default.student_classrooms;
     }
     listRecordsAdmin(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -166,13 +169,13 @@ class ClassroomController {
                 const recordsStudents = yield models_1.default.student_classrooms.findAndCountAll({
                     limit,
                     offset,
-                    attributes: [],
+                    attributes: ["status"],
                     where: {
                         classroom_id: id
                     },
                     include: [{
                             model: models_1.default.users,
-                            attributes: ['id', 'name', 'last_name', 'avatar', 'email'],
+                            attributes: ['id', 'name', 'last_name', 'avatar', 'email', 'created_at'],
                         },
                     ]
                 });
@@ -189,19 +192,26 @@ class ClassroomController {
             try {
                 const { id } = req.params;
                 const { email } = req.body;
-                console.log(id);
+                const teacherId = req.current_user;
                 const record = yield this.model.findOne({
                     attributes: {
                         exclude: ['user_id', 'classroom_id']
                     },
                     where: {
                         id
-                    }
+                    },
+                    include: {
+                        model: models_1.default.users,
+                        as: 'owner',
+                        attributes: ['name', 'last_name', 'avatar'],
+                    },
                 });
                 if (!record)
                     throw new classrooms_exceptions_1.ClassroomNotFound();
                 const recordUser = yield this.modelUsers.findOne({
-                    attributes: ['rol_id', 'id'],
+                    attributes: {
+                        exclude: ["password", "token", "active_status", "last_message"]
+                    },
                     where: {
                         email
                     }
@@ -214,7 +224,44 @@ class ClassroomController {
                 if (isUserAlreadyInClassroom)
                     return res.status(400).json({ message: "User is already assigned to this classroom." });
                 yield record.addUsers([recordUser.id], { through: { status: "PENDING" } });
-                return res.status(201).json({ message: "Student added" });
+                const token = (0, jwt_1.createToken)({ id: teacherId, classroom: record.id });
+                const content = record.owner.avatar
+                    ? `Accept Invitation : <button> <a href='http://localhost:5173/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}&avatar=${record.owner.avatar}'>Confirm invitation</a> </button>`
+                    : `Accept Invitation : <button> <a href='http://localhost:5173/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}'>Confirm invitation</a> </button>`;
+                yield mail_provider_1.default.send(email, `Invitation to classroom ${record.classroom_name}`, content);
+                return res.status(201).json(recordUser);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json({ message: error.message });
+            }
+        });
+    }
+    confirmStudentClassroom(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { token } = req.body;
+                const user_id = req.current_user;
+                const payload = (0, jwt_1.verifyToken)(token);
+                const record = this.model.findOne({
+                    attributes: ["id"],
+                    where: {
+                        id: payload.classroom
+                    }
+                });
+                if (!record)
+                    throw new classrooms_exceptions_1.ClassroomNotFound();
+                const [updated] = yield this.modelStudentClassroom.update({ status: "ACTIVE" }, // Lo que se quiere actualizar
+                {
+                    where: {
+                        classroom_id: payload.classroom,
+                        user_id: user_id,
+                        status: "PENDING" // Añade cualquier condición extra si es necesario
+                    },
+                });
+                if (updated === 0)
+                    throw new classrooms_exceptions_1.StudentNotInClassroom();
+                return res.status(204).json();
             }
             catch (error) {
                 console.log(error);

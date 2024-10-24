@@ -188,5 +188,28 @@ class AnswerController {
             }
         });
     }
+    listScoreStudent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { classroom_id, user_id } = req.params;
+                const { page, per_page } = req.query;
+                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
+                const records = yield this.model.findAndCountAll({
+                    limit,
+                    offset,
+                    attributes: ["created_at"],
+                    where: {
+                        classroom_id,
+                        user_id
+                    },
+                });
+                return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
+            }
+            catch (error) {
+                console.log(error);
+                return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
+            }
+        });
+    }
 }
 exports.default = AnswerController;

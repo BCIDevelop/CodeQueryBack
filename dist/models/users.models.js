@@ -22,6 +22,10 @@ class UserModel extends sequelize_1.Model {
             foreignKey: 'rol_id',
             targetKey: 'id'
         });
+        this.belongsTo(models.subscriptions, {
+            foreignKey: 'subscription_id',
+            targetKey: 'id'
+        });
         this.hasMany(models.classrooms, { foreignKey: 'owner_id' });
         this.hasMany(models.questions, { foreignKey: 'user_id' });
         this.hasMany(models.answers, { foreignKey: 'user_id' });
@@ -62,6 +66,20 @@ class UserModel extends sequelize_1.Model {
             last_message: {
                 type: sequelize_1.DataTypes.STRING,
                 allowNull: true,
+            },
+            customer_id: {
+                type: sequelize_1.DataTypes.STRING,
+                allowNull: true,
+                unique: true
+            },
+            subscription_id: {
+                type: sequelize_1.DataTypes.INTEGER,
+                allowNull: true,
+            },
+            subscription_user: {
+                type: sequelize_1.DataTypes.STRING,
+                allowNull: true,
+                unique: true
             }
         }, {
             sequelize,

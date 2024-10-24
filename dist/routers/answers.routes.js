@@ -28,7 +28,8 @@ class AnswerRouter {
             .get('/:id', this.getById)
             .patch('/:id', answers_validations_1.default.updateRecord(), this.updateById)
             .delete('/:id', this.deleteById)
-            .get('/classroom/:classroom_id', answers_validations_1.default.listRecords(), this.allByClassroom);
+            .get('/classroom/:classroom_id', answers_validations_1.default.listRecords(), this.allByClassroom)
+            .get('/classroom/:classroom_id/student/:user_id', answers_validations_1.default.listRecords(), this.getScoreStudent);
     }
     allByClassroom(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -64,6 +65,12 @@ class AnswerRouter {
         return __awaiter(this, void 0, void 0, function* () {
             const controllers = new answers_controller_1.default();
             controllers.deleteRecordById(req, res);
+        });
+    }
+    getScoreStudent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllers = new answers_controller_1.default();
+            controllers.listScoreStudent(req, res);
         });
     }
 }

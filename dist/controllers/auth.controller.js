@@ -31,13 +31,10 @@ class AuthController {
                         email
                     }
                 });
-                // Usuario no existe
                 if (!record)
                     throw new users_exceptions_1.UserNotFound();
-                //Usario inhabilitado
                 if (!record.active_status)
                     throw new users_exceptions_1.UserInactive();
-                //Contra incorrecta
                 const validatePassword = yield record.validatePassword(password);
                 if (!validatePassword)
                     throw new users_exceptions_1.UserIncorretPassword();

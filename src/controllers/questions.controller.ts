@@ -18,8 +18,8 @@ class QuestionController{
     
     async listRecords(req: Request, res: Response) {
         try {
-            const { page, per_page } = req.query;
-            const { limit, offset } = paginationField(Number(page), Number(per_page));
+            const { page, per_page } = req.query
+            const { limit, offset } = paginationField(Number(page), Number(per_page))
             const  {id}=req.params
             const records = await this.model.findAndCountAll({
                 limit,
