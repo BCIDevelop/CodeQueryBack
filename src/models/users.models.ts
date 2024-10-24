@@ -10,6 +10,10 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
             foreignKey:'rol_id',
             targetKey:'id'
         })
+        this.belongsTo(models.subscriptions,{
+            foreignKey:'subscription_id',
+            targetKey:'id'
+        })
         this.hasMany(models.classrooms,{foreignKey:'owner_id'})
         this.hasMany(models.questions,{foreignKey:'user_id'})
         this.hasMany(models.answers,{foreignKey:'user_id'})
@@ -39,7 +43,7 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
 
                 }
                 ,
-                token:{
+                token:{   /* Eliminar! mal implementado */
                     type:DataTypes.STRING,
                     allowNull:true,
 
@@ -55,7 +59,22 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
                 last_message:{
                     type:DataTypes.STRING,
                     allowNull:true,
+                },
+                customer_id:{
+                    type:DataTypes.STRING,
+                    allowNull:true,
+                    unique:true
+                },
+                subscription_id:{
+                    type:DataTypes.INTEGER,
+                    allowNull:true,
+                },
+                subscription_user:{
+                    type:DataTypes.STRING,
+                    allowNull:true,
+                    unique:true
                 }
+
             },
             {
                 sequelize,

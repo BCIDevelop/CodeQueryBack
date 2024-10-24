@@ -6,7 +6,8 @@ class ClassRoomModel extends sequelize_1.Model {
         this.belongsToMany(models.users, { through: 'student_classrooms' });
         this.belongsTo(models.users, {
             foreignKey: 'owner_id',
-            targetKey: 'id'
+            targetKey: 'id',
+            as: 'owner',
         });
         this.hasMany(models.questions, { foreignKey: 'classroom_id' });
         this.hasMany(models.answers, { foreignKey: 'classroom_id' });

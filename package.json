@@ -36,6 +36,7 @@
     "sequelize-auto-migrations-v2": "^1.2.1",
     "socket.io": "^4.8.0",
     "socketio": "^1.0.0",
+    "stripe": "^17.2.1",
     "vm": "^0.1.0"
   },
   "devDependencies": {

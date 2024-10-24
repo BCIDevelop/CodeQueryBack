@@ -37,6 +37,13 @@ class ClassroomValidations {
             }),
         });
     }
+    confirmStudent() {
+        return this.celebrate({
+            [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({
+                token: celebrate_1.Joi.string().required(),
+            }),
+        });
+    }
     addBulkStudents() {
         return this.celebrate({
             [celebrate_1.Segments.BODY]: celebrate_1.Joi.object().keys({

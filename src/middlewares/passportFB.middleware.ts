@@ -9,7 +9,7 @@ export const passportFBConfiguration=(req:Request,res:Response,next:NextFunction
     passport.use(new Strategy({
         clientID: process.env.FACEBOOK_APP_ID!,
         clientSecret: process.env.FACEBOOK_APP_SECRET!,
-        callbackURL: "http://localhost:8000/auth/facebook/callback",
+        callbackURL: `${process.env.SERVER_URL}/auth/facebook/callback`,
         scope: ['public_profile', 'email'] ,
         profileFields: [ 'emails','picture','name']
 
@@ -48,12 +48,12 @@ export const passportFBConfiguration=(req:Request,res:Response,next:NextFunction
 export const passportFBCallback =(req:Request,res:Response,next:NextFunction)=>{
     
     passport.authenticate('facebook',{session:false},(err:any,userBody:UserClient)=>{
-        if(err || !userBody) return res.redirect('http://localhost:5173/error')
+        if(err || !userBody) return res.redirect(`${process.env.CLIENT_URL}/error`)
         const {accessToken,refreshToken}=createTokens({id:userBody.id})
         const {email,id,rol_id,name,last_name,avatar} = userBody
         const url = avatar 
-        ?`http://localhost:5173/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}&email=${email}&id=${id}&rol_id=${rol_id}&last_name=${last_name}&name=${name}&avatar=${avatar}`
-        :`http://localhost:5173/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}&email=${email}&id=${id}&rol_id=${rol_id}&last_name=${last_name}&name=${name}` 
+        ?`${process.env.CLIENT_URL}/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}&email=${email}&id=${id}&rol_id=${rol_id}&last_name=${last_name}&name=${name}&avatar=${avatar}`
+        :`${process.env.CLIENT_URL}/auth/success?accessToken=${accessToken}&refreshToken=${refreshToken}&email=${email}&id=${id}&rol_id=${rol_id}&last_name=${last_name}&name=${name}` 
         return res.redirect(url);
     })(req,res,next)
 }
