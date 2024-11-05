@@ -17,6 +17,7 @@ export const addSugar = (name:string,user_id:string)=>{
     const seconds = String(now.getSeconds()).padStart(2, '0'); 
     const sugarName= `${month}-${day}-${year}T${hours}${minutes}${seconds}`; 
     nameArray.splice(1, 0, sugarName);
+    nameArray.pop()
     const fileName = nameArray.join('.')
     return `${user_id}/${fileName}`;
 }
