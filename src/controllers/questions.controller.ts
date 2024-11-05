@@ -59,12 +59,11 @@ class QuestionController{
     async createRecords(req:AuthenticatedRequest,res:Response){
         const transaction = await this.model.sequelize.transaction();
         try{
-           
             req.body.user_id = req.current_user
             if(req.files){
                 const name = validateImage(req.files.image as UploadedFile)
-                /* const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,addSugar(name,req.current_user as string)) */
-                req.body['image']="test"
+                const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,addSugar(name,req.current_user as string))
+                req.body['image']=urlImage
             }
             const record=this.model.build(req.body)
             await record.save()
@@ -76,6 +75,7 @@ class QuestionController{
         }
         catch(error:any){   
             await transaction.rollback()
+            /* TODO: eliminar posbile imagen guardada */
             return res.status(500).json({message:error.message})
         }
     }

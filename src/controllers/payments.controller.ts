@@ -28,20 +28,24 @@ class PaymentController{
         try {
             const {name} = req.body
             const userId = req.current_user
+            console.log(userId)
             const userRecord = await this.userModel.findOne({
                 where:{
                     id:userId
                 },
                 attributes:['id','subscription_id','customer_id','email','name','last_name']
             })
+            
             if(!userRecord) throw new UserNotFound()
             if(userRecord.subscription_id) throw new SubscriptionActive()
+                    console.log('paseeeeeeeeeeeeeee')
             const subscriptionRecord = await this.subscriptionModel.findOne({
                 where:{
                     name
                 },
                 attributes:["price_id"]
             })
+
             if(!subscriptionRecord) throw new SubscriptionNotFound()
             if(!userRecord.customer_id){
                 const responseCustomer = await this.axiosClient.post('/customers',{
@@ -129,6 +133,34 @@ class PaymentController{
                 userRecordDeleted.subscription_id = null
                 userRecordDeleted.save()
                 break
+            case 'customer.subscription.updated':
+                const customerSubscriptionUpdated = event.data.object;
+                const {cancel_at_period_end,cancellation_details,customer : customerUpdated,plan:subscriptionPlan,id:subscription_id} = customerSubscriptionUpdated
+                if (!cancellation_details.feedback){
+                    const userRecord = await this.userModel.findOne({
+                        where:{
+                            customer_id:customerUpdated
+                        }
+                    })
+                    if(!userRecord) return res.sendStatus(400)
+                    if(cancel_at_period_end){
+                        userRecord.subscription_user=null
+                        userRecord.subscription_id = null
+                    }
+                    else{
+                        const subscription_record = await this.subscriptionModel.findOne({
+                            where:{product_id:subscriptionPlan.product},
+                            attributes:['id'],
+                            raw: true
+                        })
+                        if(!subscription_record) return res.sendStatus(400)
+                        userRecord.subscription_user=subscription_id
+                        userRecord.subscription_id = subscription_record.id
+                    }
+                    userRecord.save()
+                }
+                break
+                
             default:
               // Unexpected event type
               console.log(`Unhandled event type ${event.type}.`);
@@ -154,7 +186,7 @@ class PaymentController{
                 customer: record.customer_id,
                 return_url:`${process.env.CLIENT_URL}/dashboard`
             })
-            return res.status(200).json({url:session.url})
+            return res.status(200).json({results:{url:session.url}})
         } catch (error:any) {
             return res.status(error?.code|| 500).json({message:error.message})
         }
