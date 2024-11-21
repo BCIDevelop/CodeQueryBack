@@ -77,8 +77,8 @@ class AnswerController{
             req.body.user_id = req.current_user
             if(req.files){
                 const name = validateImage(req.files.image as UploadedFile)
-                /* const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,addSugar(name,req.current_user as string)) */
-                req.body['image']="test"
+                const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,addSugar(name,req.current_user as string))
+                req.body['image']=urlImage
             }
             const record=this.model.build(req.body)
             await record.save()

@@ -88,7 +88,7 @@ class UserModel extends Model<InferAttributes<UserModel>,InferCreationAttributes
         this.password=passwordHash
     }
     async validatePassword(password:string){
-        console.log("Password",this.password)
+
         return compareSync(password,this.password)
     }
 }

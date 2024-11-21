@@ -25,6 +25,7 @@ class AuthController{
             const validatePassword=await record.validatePassword(password)
             if (!validatePassword) throw new UserIncorretPassword()
             const {rol_id,last_name,name} = record
+            console.log(record)
             return res.status(200).json({...createTokens({id:record.id}),rol_id,last_name,name,id:record.id})
         }   
         catch(error:any){

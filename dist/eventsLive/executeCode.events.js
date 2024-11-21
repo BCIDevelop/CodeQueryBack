@@ -34,7 +34,7 @@ exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             if (data.language === 'javascript') {
-                console.log('javascript');
+                
                 const sandbox = { Math,
                     console: {
                         log: (...args) => {

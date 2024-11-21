@@ -6,7 +6,7 @@ import {errors} from 'celebrate'
 import morgan from "morgan";
 import SocketIO from './socketio';
 import { createServer } from 'http';
-import passport from 'passport'
+
 
 
 import http from "http";

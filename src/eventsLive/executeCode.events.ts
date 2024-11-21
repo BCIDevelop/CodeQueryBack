@@ -24,7 +24,7 @@ export default async(socket:Socket,io:Server)=> {
             })
            
             if(data.language === 'javascript') {
-                console.log('javascript')
+                
                 const sandbox:SandBoxType = { Math, 
                     console: {
                         log: (...args) => {
@@ -34,7 +34,6 @@ export default async(socket:Socket,io:Server)=> {
                     ,Function:undefined,global:undefined,process:undefined }
                 vm.createContext(sandbox) 
                 new vm.Script(value)
-                console.log(outputs.join('\n'))
                 io.in(`question${questionId}`).emit('compiled',{output:outputs.join('\n')}) 
             }
             else{

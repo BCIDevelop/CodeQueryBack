@@ -15,7 +15,7 @@ export const passportGmailConfiguration=(req:Request,res:Response,next:NextFunct
         passReqToCallback:true
 
     },async (req:Request,res:any,accessToken:any,refreshToken:any, profile:any,cb:(error:any,body:UserClient|undefined)=>void)=>{
-        console.log(profile)
+   
         try {
             
            

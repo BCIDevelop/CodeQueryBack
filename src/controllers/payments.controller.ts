@@ -28,7 +28,7 @@ class PaymentController{
         try {
             const {name} = req.body
             const userId = req.current_user
-            console.log(userId)
+            
             const userRecord = await this.userModel.findOne({
                 where:{
                     id:userId
@@ -38,7 +38,7 @@ class PaymentController{
             
             if(!userRecord) throw new UserNotFound()
             if(userRecord.subscription_id) throw new SubscriptionActive()
-                    console.log('paseeeeeeeeeeeeeee')
+                    
             const subscriptionRecord = await this.subscriptionModel.findOne({
                 where:{
                     name
