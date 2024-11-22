@@ -13,6 +13,7 @@ class TagModel extends Model {
             {
                 name:{
                     type:DataTypes.STRING,
+                    unique:true
                 }
             },
             {
