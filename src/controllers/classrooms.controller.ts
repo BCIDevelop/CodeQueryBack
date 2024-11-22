@@ -214,9 +214,10 @@ class ClassroomController{
             if (isUserAlreadyInClassroom) return res.status(400).json({ message: "User is already assigned to this classroom." })
             await record.addUsers([recordUser.id],{through:{status:"PENDING"}})
             const token = createToken({id:teacherId,classroom:record.id})
+            const client_url = process.env.CLIENT_URL
             const content = record.owner.avatar
-            ?`Accept Invitation : <button> <a href='http://localhost:5173/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}&avatar=${record.owner.avatar}'>Confirm invitation</a> </button>`
-            :`Accept Invitation : <button> <a href='http://localhost:5173/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}'>Confirm invitation</a> </button>`
+            ?`Accept Invitation : <button> <a href='${client_url}/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}&avatar=${record.owner.avatar}'>Confirm invitation</a> </button>`
+            :`Accept Invitation : <button> <a href='${client_url}/confirmClassroom?name=${record.owner.name}&classroom_id=${id}&token=${token}'>Confirm invitation</a> </button>`
             await EmailServer.send(email,`Invitation to classroom ${record.classroom_name}`,content)
 
             return res.status(201).json(recordUser)

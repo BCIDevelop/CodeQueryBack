@@ -25,7 +25,7 @@ class Server {
         this.app.use('/payments/webhook', express.raw({ type: 'application/json' }));
         this.app.use(express.json())
         this.app.use(morgan('dev'))
-        this.app.use(cors({  origin: 'http://localhost:5173' ,credentials: true}))
+        this.app.use(cors({  origin: process.env.CLIENT_URL ,credentials: true}))
         this.app.use(fileUpload({debug:true}))
     }
     routers(){
