@@ -34,7 +34,6 @@ exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
             if (data.language === 'javascript') {
-                
                 const sandbox = { Math,
                     console: {
                         log: (...args) => {
@@ -44,7 +43,6 @@ exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* ()
                     Function: undefined, global: undefined, process: undefined };
                 vm_1.default.createContext(sandbox);
                 new vm_1.default.Script(value);
-                console.log(outputs.join('\n'));
                 io.in(`question${questionId}`).emit('compiled', { output: outputs.join('\n') });
             }
             else {

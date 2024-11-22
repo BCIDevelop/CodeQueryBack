@@ -26,7 +26,6 @@ const passportGmailConfiguration = (req, res, next) => {
         state: false,
         passReqToCallback: true
     }, (req, res, accessToken, refreshToken, profile, cb) => __awaiter(void 0, void 0, void 0, function* () {
-        
         try {
             const profile_email = profile.emails[0].value;
             const name = profile.name.givenName;

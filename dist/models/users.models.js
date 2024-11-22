@@ -95,7 +95,6 @@ class UserModel extends sequelize_1.Model {
     }
     validatePassword(password) {
         return __awaiter(this, void 0, void 0, function* () {
-        
             return (0, bcryptjs_1.compareSync)(password, this.password);
         });
     }

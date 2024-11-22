@@ -6,14 +6,15 @@ var Sequelize = require('sequelize');
  * Actions summary:
  *
  * createTable "roles", deps: []
+ * createTable "subscriptions", deps: []
  * createTable "tags", deps: []
- * createTable "users", deps: [roles]
+ * createTable "users", deps: [roles, subscriptions]
  * createTable "classrooms", deps: [users]
  * createTable "chats", deps: [users, users]
  * createTable "questions", deps: [users, classrooms]
  * createTable "messages", deps: [chats, users]
  * createTable "question_tags", deps: [questions, tags, questions, tags]
- * createTable "answers", deps: [questions, users]
+ * createTable "answers", deps: [questions, users, classrooms]
  * createTable "student_classrooms", deps: [users, classrooms, classrooms, users]
  *
  **/
@@ -21,7 +22,7 @@ var Sequelize = require('sequelize');
 var info = {
     "revision": 1,
     "name": "noname",
-    "created": "2024-10-13T22:09:39.592Z",
+    "created": "2024-11-22T20:40:58.309Z",
     "comment": ""
 };
 
@@ -40,6 +41,46 @@ var migrationCommands = [{
                 "name": {
                     "type": Sequelize.STRING,
                     "field": "name"
+                },
+                "created_at": {
+                    "type": Sequelize.DATE,
+                    "field": "created_at",
+                    "allowNull": false
+                },
+                "updated_at": {
+                    "type": Sequelize.DATE,
+                    "field": "updated_at",
+                    "allowNull": false
+                }
+            },
+            {}
+        ]
+    },
+    {
+        fn: "createTable",
+        params: [
+            "subscriptions",
+            {
+                "id": {
+                    "type": Sequelize.INTEGER,
+                    "field": "id",
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "allowNull": false
+                },
+                "name": {
+                    "type": Sequelize.STRING,
+                    "field": "name",
+                    "unique": true
+                },
+                "product_id": {
+                    "type": Sequelize.STRING,
+                    "field": "product_id",
+                    "unique": true
+                },
+                "price_id": {
+                    "type": Sequelize.STRING,
+                    "field": "price_id"
                 },
                 "created_at": {
                     "type": Sequelize.DATE,
@@ -143,6 +184,29 @@ var migrationCommands = [{
                 "last_message": {
                     "type": Sequelize.STRING,
                     "field": "last_message",
+                    "allowNull": true
+                },
+                "customer_id": {
+                    "type": Sequelize.STRING,
+                    "field": "customer_id",
+                    "unique": true,
+                    "allowNull": true
+                },
+                "subscription_id": {
+                    "type": Sequelize.INTEGER,
+                    "onUpdate": "CASCADE",
+                    "onDelete": "SET NULL",
+                    "references": {
+                        "model": "subscriptions",
+                        "key": "id"
+                    },
+                    "field": "subscription_id",
+                    "allowNull": true
+                },
+                "subscription_user": {
+                    "type": Sequelize.STRING,
+                    "field": "subscription_user",
+                    "unique": true,
                     "allowNull": true
                 },
                 "created_at": {
@@ -482,6 +546,17 @@ var migrationCommands = [{
                     "field": "is_accepted",
                     "defaultValue": false
                 },
+                "classroom_id": {
+                    "type": Sequelize.INTEGER,
+                    "onUpdate": "CASCADE",
+                    "onDelete": "CASCADE",
+                    "references": {
+                        "model": "classrooms",
+                        "key": "id"
+                    },
+                    "allowNull": true,
+                    "field": "classroom_id"
+                },
                 "created_at": {
                     "type": Sequelize.DATE,
                     "field": "created_at",
@@ -522,6 +597,11 @@ var migrationCommands = [{
                     },
                     "allowNull": true,
                     "field": "classroom_id"
+                },
+                "status": {
+                    "type": Sequelize.STRING,
+                    "field": "status",
+                    "defaultValue": "PENDING"
                 },
                 "created_at": {
                     "type": Sequelize.DATE,

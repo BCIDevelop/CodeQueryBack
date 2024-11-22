@@ -80,7 +80,6 @@ class PaymentController {
                 return res.status(201).json({ url: responseSession.data.url });
             }
             catch (error) {
-                console.log(error.response);
                 if (error.response)
                     return res.status(error.response.status).json({ message: error.response.statusText });
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
@@ -105,7 +104,6 @@ class PaymentController {
             switch (event.type) {
                 case 'customer.subscription.created':
                     const customerSubscription = event.data.object;
-                    console.log(customerSubscription);
                     const { customer, id, plan } = customerSubscription;
                     const { product } = plan;
                     const userRecord = yield this.userModel.findOne({
@@ -115,14 +113,57 @@ class PaymentController {
                     });
                     if (!userRecord)
                         return res.sendStatus(400);
-                    const subscriptionRecord = this.subscriptionModel.findOne({
+                    const subscriptionRecord = yield this.subscriptionModel.findOne({
                         where: { product_id: product }
                     });
                     if (!subscriptionRecord)
                         return res.sendStatus(400);
                     userRecord.subscription_id = subscriptionRecord.id;
-                    userRecord.subscription = id;
+                    userRecord.subscription_user = id;
                     userRecord.save();
+                    break;
+                case 'customer.subscription.deleted':
+                    const customerSubscriptionDeleted = event.data.object;
+                    const { customerDeleted } = customerSubscriptionDeleted;
+                    const userRecordDeleted = yield this.userModel.findOne({
+                        where: {
+                            customer_id: customerDeleted
+                        }
+                    });
+                    if (!userRecordDeleted)
+                        return res.sendStatus(400);
+                    userRecordDeleted.subscription_user = null;
+                    userRecordDeleted.subscription_id = null;
+                    userRecordDeleted.save();
+                    break;
+                case 'customer.subscription.updated':
+                    const customerSubscriptionUpdated = event.data.object;
+                    const { cancel_at_period_end, cancellation_details, customer: customerUpdated, plan: subscriptionPlan, id: subscription_id } = customerSubscriptionUpdated;
+                    if (!cancellation_details.feedback) {
+                        const userRecord = yield this.userModel.findOne({
+                            where: {
+                                customer_id: customerUpdated
+                            }
+                        });
+                        if (!userRecord)
+                            return res.sendStatus(400);
+                        if (cancel_at_period_end) {
+                            userRecord.subscription_user = null;
+                            userRecord.subscription_id = null;
+                        }
+                        else {
+                            const subscription_record = yield this.subscriptionModel.findOne({
+                                where: { product_id: subscriptionPlan.product },
+                                attributes: ['id'],
+                                raw: true
+                            });
+                            if (!subscription_record)
+                                return res.sendStatus(400);
+                            userRecord.subscription_user = subscription_id;
+                            userRecord.subscription_id = subscription_record.id;
+                        }
+                        userRecord.save();
+                    }
                     break;
                 default:
                     // Unexpected event type
@@ -130,6 +171,29 @@ class PaymentController {
             }
             // Return a 200 response to acknowledge receipt of the event
             res.send();
+        });
+    }
+    getCustomerPortal(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userId = req.current_user;
+                const record = yield this.userModel.findOne({
+                    where: {
+                        id: userId
+                    },
+                    attributes: ["customer_id"]
+                });
+                if (!record)
+                    throw new users_exceptions_1.UserNotFound();
+                const session = yield this.stripe.billingPortal.sessions.create({
+                    customer: record.customer_id,
+                    return_url: `${process.env.CLIENT_URL}/dashboard`
+                });
+                return res.status(200).json({ results: { url: session.url } });
+            }
+            catch (error) {
+                return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
+            }
         });
     }
 }

@@ -23,7 +23,8 @@ class PaymentRouter {
     init() {
         return this.router
             .post('/checkout', payments_validations_1.default.createCheckout(), auth_middlewares_1.isAuthenticated, this.getCheckout)
-            .post('/webhook', this.getWebhook);
+            .post('/webhook', this.getWebhook)
+            .get('/customerPortal', auth_middlewares_1.isAuthenticated, this.getCustomerPortal);
     }
     getCheckout(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -35,6 +36,12 @@ class PaymentRouter {
         return __awaiter(this, void 0, void 0, function* () {
             const controller = new payments_controller_1.default();
             yield controller.getWebhook(req, res);
+        });
+    }
+    getCustomerPortal(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controller = new payments_controller_1.default();
+            yield controller.getCustomerPortal(req, res);
         });
     }
 }
