@@ -20,6 +20,10 @@ const rolesSeed = [
     { id:4,name: 'REACT' },
     { id:5,name: 'POSTGRES' },
     { id:6,name: 'NODEJS' },
+    { id:7,name: 'CODING' },
+    { id:8,name: 'PYTHON' },
+    { id:9,name: 'TYPESCRIPT' },
+    { id:10,name: 'MONGODB' },
   ];
   async function seedDatabase() {
     const transaction = await sequelize.transaction();
