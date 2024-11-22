@@ -9,6 +9,7 @@ class TagModel extends sequelize_1.Model {
         return super.init({
             name: {
                 type: sequelize_1.DataTypes.STRING,
+                unique: true
             }
         }, {
             sequelize,

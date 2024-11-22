@@ -15,7 +15,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../models"));
 exports.default = (socket, io) => __awaiter(void 0, void 0, void 0, function* () {
     socket.on('join', () => __awaiter(void 0, void 0, void 0, function* () {
-        /* Handle status */
         try {
             const chatId = socket.handshake.query.chatId;
             const sockets = yield io.in(chatId).fetchSockets();

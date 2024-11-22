@@ -45,7 +45,7 @@ class AuthController{
             const token=generate({length:8,numbers:true})
             record.token = token
             await record.save()
-           /*  await EmailServer.send(email,"Please confirm you account",`Confirm you account : <button> <a href='http://localhost:5173/confirm?email=${email}&token=${token}'>Confirm account</a> </button>`) */
+            await EmailServer.send(email,"Please confirm you account",`Confirm you account : <button> <a href='http://localhost:5173/confirm?email=${email}&token=${token}'>Confirm account</a> </button>`)
             return res.status(201).json({record})
         }
         catch(error:any){
@@ -109,6 +109,11 @@ class AuthController{
 
         }
     }
+
+    /* OAuth */
+
+    /* Facebook */
+ 
 }
 export default AuthController
 

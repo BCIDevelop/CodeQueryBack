@@ -86,8 +86,8 @@ class AnswerController {
                 req.body.user_id = req.current_user;
                 if (req.files) {
                     const name = (0, imageManage_1.validateImage)(req.files.image);
-                    /* const urlImage=await this.bucket.uploadFile(req.files.image as UploadedFile ,addSugar(name,req.current_user as string)) */
-                    req.body['image'] = "test";
+                    const urlImage = yield this.bucket.uploadFile(req.files.image, (0, imageManage_1.addSugar)(name, req.current_user));
+                    req.body['image'] = urlImage;
                 }
                 const record = this.model.build(req.body);
                 yield record.save();
@@ -184,6 +184,29 @@ class AnswerController {
                 return res.status(200).json({ message: 'Answer Eliminated' });
             }
             catch (error) {
+                return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
+            }
+        });
+    }
+    listScoreStudent(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { classroom_id, user_id } = req.params;
+                const { page, per_page } = req.query;
+                const { limit, offset } = (0, pagination_1.paginationField)(Number(page), Number(per_page));
+                const records = yield this.model.findAndCountAll({
+                    limit,
+                    offset,
+                    attributes: ["created_at"],
+                    where: {
+                        classroom_id,
+                        user_id
+                    },
+                });
+                return res.status(200).json((0, pagination_1.paginatioResults)(records, Number(page), Number(per_page)));
+            }
+            catch (error) {
+                console.log(error);
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
             }
         });

@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_validations_1 = __importDefault(require("../validations/auth.validations"));
 const auth_controller_1 = __importDefault(require("../controllers/auth.controller"));
+const passportFB_middleware_1 = require("../middlewares/passportFB.middleware");
+const passportGmail_middleware_1 = require("../middlewares/passportGmail.middleware");
 class AuthRouter {
     constructor() {
         this.router = (0, express_1.Router)();
@@ -25,7 +27,12 @@ class AuthRouter {
             .post("/refresh_token", auth_validations_1.default.refreshtoken(), this.refreshToken)
             .post("/reset_password", auth_validations_1.default.resetPassword(), this.resetPassword)
             .post("/signUp", auth_validations_1.default.signUp(), this.signUp)
-            .patch("/confirm", auth_validations_1.default.confirmAccount(), this.confirmAccount);
+            .patch("/confirm", auth_validations_1.default.confirmAccount(), this.confirmAccount)
+            /* Facebook OAuth */
+            .get("/facebook", (req, res, next) => (0, passportFB_middleware_1.passportFBConfiguration)(req, res, next))
+            .get('/facebook/callback', (req, res, next) => (0, passportFB_middleware_1.passportFBCallback)(req, res, next))
+            .get("/gmail", (req, res, next) => (0, passportGmail_middleware_1.passportGmailConfiguration)(req, res, next))
+            .get('/gmail/callback', (req, res, next) => (0, passportGmail_middleware_1.passportGmailCallback)(req, res, next));
     }
     confirmAccount(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

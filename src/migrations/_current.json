@@ -428,6 +428,43 @@
             },
             "indexes": []
         },
+        "subscriptions": {
+            "tableName": "subscriptions",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "primaryKey": true,
+                    "autoIncrement": true,
+                    "field": "id",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "unique": true,
+                    "field": "name",
+                    "seqType": "Sequelize.STRING"
+                },
+                "product_id": {
+                    "unique": true,
+                    "field": "product_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "price_id": {
+                    "field": "price_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "tags": {
             "tableName": "tags",
             "schema": {
@@ -439,6 +476,7 @@
                     "seqType": "Sequelize.INTEGER"
                 },
                 "name": {
+                    "unique": true,
                     "field": "name",
                     "seqType": "Sequelize.STRING"
                 },
@@ -515,6 +553,29 @@
                     "field": "last_message",
                     "seqType": "Sequelize.STRING"
                 },
+                "customer_id": {
+                    "allowNull": true,
+                    "unique": true,
+                    "field": "customer_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "subscription_id": {
+                    "allowNull": true,
+                    "field": "subscription_id",
+                    "references": {
+                        "model": "subscriptions",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "subscription_user": {
+                    "allowNull": true,
+                    "unique": true,
+                    "field": "subscription_user",
+                    "seqType": "Sequelize.STRING"
+                },
                 "created_at": {
                     "allowNull": false,
                     "field": "created_at",
@@ -529,5 +590,5 @@
             "indexes": []
         }
     },
-    "revision": 3
+    "revision": 1
 }

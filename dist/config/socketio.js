@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const socket_io_1 = require("socket.io");
 const events_1 = __importDefault(require("../events"));
+const eventsLive_1 = __importDefault(require("../eventsLive"));
 class SocketIO {
     constructor(express) {
         this.express = express;
@@ -33,6 +34,13 @@ class SocketIO {
             if (chatId)
                 socket.join(chatId);
             yield (0, events_1.default)(socket, this.server);
+        }));
+        this.server.of('live').on('connection', (socket) => __awaiter(this, void 0, void 0, function* () {
+            console.log(`Conexion con el socket live --> ${socket.id}`);
+            const questionId = socket.handshake.query.questionId;
+            if (questionId)
+                socket.join(`question${questionId}`);
+            yield (0, eventsLive_1.default)(socket, this.server.of('live'));
         }));
     }
 }
