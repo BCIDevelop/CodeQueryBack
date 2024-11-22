@@ -2,4 +2,4 @@
 set -o exit
 npm install
 npx runmigration
-npm run dev ./dist/index.js
+npm run seed
