@@ -18,6 +18,7 @@ class Server {
         this.server = (0, http_1.createServer)(this.app);
     }
     middleware() {
+        this.app.use('/payments/webhook', express_1.default.raw({ type: 'application/json' }));
         this.app.use(express_1.default.json());
         this.app.use((0, morgan_1.default)('dev'));
         this.app.use((0, cors_1.default)({ origin: 'http://localhost:5173', credentials: true }));

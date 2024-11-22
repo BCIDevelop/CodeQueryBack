@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClassroomNotFound = void 0;
+exports.StudentNotInClassroom = exports.ClassroomNotFound = void 0;
 class ClassroomNotFound {
     constructor() {
         this.message = 'Classroom Not Found';
@@ -8,3 +8,10 @@ class ClassroomNotFound {
     }
 }
 exports.ClassroomNotFound = ClassroomNotFound;
+class StudentNotInClassroom {
+    constructor() {
+        this.message = 'Student Not in Classroom';
+        this.code = 404;
+    }
+}
+exports.StudentNotInClassroom = StudentNotInClassroom;

@@ -3,9 +3,7 @@ import models from '../models'
 export default async(socket:Socket,io:Server)=> { 
         
         socket.on('join',async ()=>{
-            /* Handle status */
-            
-
+        
             try{
                 const chatId = socket.handshake.query.chatId as string
                 const sockets = await io.in(chatId).fetchSockets();

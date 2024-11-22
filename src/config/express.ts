@@ -6,6 +6,9 @@ import {errors} from 'celebrate'
 import morgan from "morgan";
 import SocketIO from './socketio';
 import { createServer } from 'http';
+
+
+
 import http from "http";
 class Server {
     public app: Express
@@ -19,6 +22,7 @@ class Server {
     }
 
     middleware(): void {
+        this.app.use('/payments/webhook', express.raw({ type: 'application/json' }));
         this.app.use(express.json())
         this.app.use(morgan('dev'))
         this.app.use(cors({  origin: 'http://localhost:5173' ,credentials: true}))
@@ -45,6 +49,7 @@ class Server {
         const socket=new SocketIO(this.server)
         socket.init()
     }
+    
 }
 
 export default new Server()

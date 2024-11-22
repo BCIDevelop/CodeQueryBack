@@ -31,13 +31,10 @@ class AuthController {
                         email
                     }
                 });
-                // Usuario no existe
                 if (!record)
                     throw new users_exceptions_1.UserNotFound();
-                //Usario inhabilitado
                 if (!record.active_status)
                     throw new users_exceptions_1.UserInactive();
-                //Contra incorrecta
                 const validatePassword = yield record.validatePassword(password);
                 if (!validatePassword)
                     throw new users_exceptions_1.UserIncorretPassword();
@@ -66,7 +63,7 @@ class AuthController {
                 const token = (0, generate_password_1.generate)({ length: 8, numbers: true });
                 record.token = token;
                 yield record.save();
-                /*  await EmailServer.send(email,"Please confirm you account",`Confirm you account : <button> <a href='http://localhost:5173/confirm?email=${email}&token=${token}'>Confirm account</a> </button>`) */
+                yield mail_provider_1.default.send(email, "Please confirm you account", `Confirm you account : <button> <a href='http://localhost:5173/confirm?email=${email}&token=${token}'>Confirm account</a> </button>`);
                 return res.status(201).json({ record });
             }
             catch (error) {
