@@ -476,6 +476,7 @@
                     "seqType": "Sequelize.INTEGER"
                 },
                 "name": {
+                    "unique": true,
                     "field": "name",
                     "seqType": "Sequelize.STRING"
                 },
