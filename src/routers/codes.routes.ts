@@ -14,9 +14,8 @@ class CodeRouter{
         this.router.use(isAuthenticated)
         return this.router
         .post('/execute',Validation.executeCode(),this.listCodeExecuted)
-        
-      
     }
+    
     async listCodeExecuted(req:Request,res:Response){
         const controllers=new CodeController()
         controllers.getExecutedCode(req,res)
