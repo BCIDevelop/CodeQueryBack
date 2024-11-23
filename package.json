@@ -42,14 +42,15 @@
     "socketio": "^1.0.0",
     "stripe": "^17.2.1",
     "vm": "^0.1.0",
-    "babel-plugin-module-resolver": "^5.0.2"
-  },
-  "devDependencies": {
+    "babel-plugin-module-resolver": "^5.0.2",
     "@babel/cli": "^7.25.6",
     "@babel/core": "^7.25.2",
     "@babel/node": "^7.25.0",
     "@babel/preset-env": "^7.25.4",
-    "@babel/preset-typescript": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7"
+  },
+  "devDependencies": {
+    
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/express-fileupload": "^1.5.1",
