@@ -28,9 +28,9 @@ const rolesSeed = [
   async function seedDatabase() {
     const transaction = await sequelize.transaction();
     try {
-      await roles.bulkCreate(rolesSeed, { transaction });
-      await users.bulkCreate(usersSeed, { transaction });
-      await tags.bulkCreate(tagsSeed, { transaction });
+      await roles.bulkCreate(rolesSeed, { transaction, ignoreDuplicates: true });
+      await users.bulkCreate(usersSeed, { transaction, ignoreDuplicates: true });
+      await tags.bulkCreate(tagsSeed, { transaction, ignoreDuplicates: true });
       await transaction.commit();
   
       console.log('Datos poblados con éxito');
