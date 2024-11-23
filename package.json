@@ -40,7 +40,8 @@
     "socket.io": "^4.8.0",
     "socketio": "^1.0.0",
     "stripe": "^17.2.1",
-    "vm": "^0.1.0"
+    "vm": "^0.1.0",
+    "@babel/register": "^7.24.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.25.6",
