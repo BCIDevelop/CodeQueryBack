@@ -47,11 +47,12 @@
     "@babel/core": "^7.25.2",
     "@babel/node": "^7.25.0",
     "@babel/preset-env": "^7.25.4",
-    "@babel/preset-typescript": "^7.24.7"
+    "@babel/preset-typescript": "^7.24.7",
+    "@types/bcryptjs": "^2.4.6"
+
   },
   "devDependencies": {
     
-    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/express-fileupload": "^1.5.1",
     "@types/jsonwebtoken": "^9.0.7",
