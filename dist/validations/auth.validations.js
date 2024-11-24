@@ -21,7 +21,6 @@ class AuthValidation {
                 email: celebrate_1.Joi.string().required(),
                 password: celebrate_1.Joi.string().required(),
                 rol_id: celebrate_1.Joi.number().integer().default(3),
-                active_status: celebrate_1.Joi.boolean().default(false)
             })
         });
     }
