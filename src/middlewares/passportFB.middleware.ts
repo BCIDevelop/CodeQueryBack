@@ -42,7 +42,7 @@ export const passportFBConfiguration=(req:Request,res:Response,next:NextFunction
         }))
     passport.authenticate('facebook',{ session: false })(req,res,next)
    
-
+    
 }   
 
 export const passportFBCallback =(req:Request,res:Response,next:NextFunction)=>{
