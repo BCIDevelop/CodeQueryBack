@@ -93,7 +93,7 @@ class ClassroomController{
                 },
                 where:{
                     [Op.and]: [
-                        { owner_id: req.current_user },
+                       
                         { id }
                     ]
                 }

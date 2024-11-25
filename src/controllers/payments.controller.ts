@@ -181,14 +181,15 @@ class PaymentController{
                 },
                 attributes:["customer_id"]
             })
-            if(!record) throw new UserNotFound()
-            if(!record.customer_id)  throw new UserNotFound()
+           /*  if(!record) throw new UserNotFound()
+            if(!record.customer_id)  return res.status(404).json({message:'No customer Id'}) */
             const session = await this.stripe.billingPortal.sessions.create({
                 customer: record.customer_id,
                 return_url:`${process.env.CLIENT_URL}/dashboard`
             })
             return res.status(200).json({results:{url:session.url}})
         } catch (error:any) {
+
             return res.status(error?.code|| 500).json({message:error.message})
         }
         

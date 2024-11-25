@@ -128,7 +128,7 @@ class QuestionController{
                 },
                 where:{
                     [Op.and]: [
-                        { user_id: req.current_user },
+                        
                         { id }
                     ]
                 },

@@ -103,7 +103,6 @@ class ClassroomController {
                     },
                     where: {
                         [sequelize_1.Op.and]: [
-                            { owner_id: req.current_user },
                             { id }
                         ]
                     }

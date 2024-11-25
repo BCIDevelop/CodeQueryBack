@@ -133,7 +133,6 @@ class QuestionController {
                     },
                     where: {
                         [sequelize_1.Op.and]: [
-                            { user_id: req.current_user },
                             { id }
                         ]
                     },
