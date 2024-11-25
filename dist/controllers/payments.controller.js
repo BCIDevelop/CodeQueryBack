@@ -185,6 +185,8 @@ class PaymentController {
                 });
                 if (!record)
                     throw new users_exceptions_1.UserNotFound();
+                if (!record.customer_id)
+                    throw new users_exceptions_1.UserNotFound();
                 const session = yield this.stripe.billingPortal.sessions.create({
                     customer: record.customer_id,
                     return_url: `${process.env.CLIENT_URL}/dashboard`
