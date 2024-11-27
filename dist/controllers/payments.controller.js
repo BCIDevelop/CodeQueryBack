@@ -183,8 +183,10 @@ class PaymentController {
                     },
                     attributes: ["customer_id"]
                 });
-                /*  if(!record) throw new UserNotFound()
-                 if(!record.customer_id)  return res.status(404).json({message:'No customer Id'}) */
+                if (!record)
+                    throw new users_exceptions_1.UserNotFound();
+                if (!record.customer_id)
+                    throw new users_exceptions_1.UserNotFound();
                 const session = yield this.stripe.billingPortal.sessions.create({
                     customer: record.customer_id,
                     return_url: `${process.env.CLIENT_URL}/dashboard`
@@ -192,6 +194,8 @@ class PaymentController {
                 return res.status(200).json({ results: { url: session.url } });
             }
             catch (error) {
+                console.log(error);
+                console.log(error.code);
                 return res.status((error === null || error === void 0 ? void 0 : error.code) || 500).json({ message: error.message });
             }
         });
